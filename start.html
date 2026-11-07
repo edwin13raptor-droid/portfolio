@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Start a Project — Edwin Dol</title>
+  <meta name="description" content="Tell me about your website project. Takes about 5 minutes." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <a href="index.html" class="logo">Edwin Dol</a>
+    <nav>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <ul class="nav-links">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="intake">
+    <div class="intake-head">
+      <p class="eyebrow">Project brief</p>
+      <h1>Let's plan your <em>website.</em></h1>
+      <p>Answer a few questions so I understand your business and what you need. It takes about 5 minutes — don't worry if you're unsure about something, just skip it and we'll figure it out together.</p>
+    </div>
+
+    <div class="progress" aria-hidden="true"><div class="progress-bar"></div></div>
+
+    <form class="form-steps" data-form="intake" novalidate>
+
+      <!-- 1. ABOUT YOU -->
+      <section class="form-card">
+        <h2><span class="num">01</span> About you</h2>
+        <div class="grid-2">
+          <div class="field">
+            <label for="name">Your name <span class="req">*</span></label>
+            <input id="name" name="name" type="text" required maxlength="100" autocomplete="name" />
+            <span class="error-msg">Please enter your name.</span>
+          </div>
+          <div class="field">
+            <label for="email">Email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" required maxlength="200" autocomplete="email" />
+            <span class="error-msg">Please enter a valid email.</span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone / WhatsApp</label>
+            <input id="phone" name="phone" type="tel" maxlength="40" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="location">City / Country</label>
+            <input id="location" name="location" type="text" maxlength="100" />
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Best way to reach you</span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="contact_method" value="Email" checked /><span>Email</span></label>
+            <label class="choice"><input type="radio" name="contact_method" value="Phone call" /><span>Phone call</span></label>
+            <label class="choice"><input type="radio" name="contact_method" value="WhatsApp" /><span>WhatsApp</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. BUSINESS -->
+      <section class="form-card">
+        <h2><span class="num">02</span> Your business</h2>
+        <div class="field">
+          <label for="business_name">Business / brand name <span class="req">*</span></label>
+          <input id="business_name" name="business_name" type="text" required maxlength="150" />
+          <span class="error-msg">Please enter your business name.</span>
+        </div>
+        <div class="field">
+          <label for="business_description">What does your business do? <span class="req">*</span></label>
+          <textarea id="business_description" name="business_description" rows="3" required maxlength="2000" placeholder="e.g. We're a family bakery selling sourdough and cakes, with 2 shops in town."></textarea>
+          <span class="error-msg">Tell me a little about your business.</span>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="audience">Who are your customers?</label>
+            <textarea id="audience" name="audience" rows="2" maxlength="1000" placeholder="e.g. Young families, local offices"></textarea>
+          </div>
+          <div class="field">
+            <label for="unique">What makes you different?</label>
+            <textarea id="unique" name="unique" rows="2" maxlength="1000" placeholder="e.g. Everything is organic and baked daily"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PROJECT -->
+      <section class="form-card">
+        <h2><span class="num">03</span> The project</h2>
+        <div class="field">
+          <span class="label">What do you need? <span class="req">*</span></span>
+          <div class="choices" data-required-group="project_type">
+            <label class="choice"><input type="radio" name="project_type" value="Brand new website" data-toggle /><span>Brand new website</span></label>
+            <label class="choice"><input type="radio" name="project_type" value="Redesign of my current site" data-toggle /><span>Redesign my current site</span></label>
+            <label class="choice"><input type="radio" name="project_type" value="Landing page" data-toggle /><span>Single landing page</span></label>
+            <label class="choice"><input type="radio" name="project_type" value="Online shop" data-toggle /><span>Online shop</span></label>
+          </div>
+          <span class="error-msg">Please choose one.</span>
+        </div>
+        <div class="field conditional" data-show-when="project_type=Redesign of my current site" hidden>
+          <label for="current_website">Current website address</label>
+          <input id="current_website" name="current_website" type="text" maxlength="300" placeholder="www.example.com" />
+          <span class="hint">What do you like / dislike about it? Tell me in "anything else" at the bottom.</span>
+        </div>
+        <div class="field">
+          <span class="label">Main goals of the website</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="goals" value="Get more customers / leads" /><span>Get more customers</span></label>
+            <label class="choice"><input type="checkbox" name="goals" value="Sell products online" /><span>Sell online</span></label>
+            <label class="choice"><input type="checkbox" name="goals" value="Take bookings / appointments" /><span>Take bookings</span></label>
+            <label class="choice"><input type="checkbox" name="goals" value="Show my work / portfolio" /><span>Show my work</span></label>
+            <label class="choice"><input type="checkbox" name="goals" value="Look professional / build trust" /><span>Look professional</span></label>
+            <label class="choice"><input type="checkbox" name="goals" value="Share info (hours, menu, location)" /><span>Share info</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. DOMAIN & HOSTING -->
+      <section class="form-card">
+        <h2><span class="num">04</span> Domain &amp; hosting</h2>
+        <p class="sub">A domain is your web address, like <strong>yourbusiness.com</strong>.</p>
+        <div class="field">
+          <span class="label">Do you already have a domain? <span class="req">*</span></span>
+          <div class="choices" data-required-group="has_domain">
+            <label class="choice"><input type="radio" name="has_domain" value="Yes" data-toggle /><span>Yes, I have one</span></label>
+            <label class="choice"><input type="radio" name="has_domain" value="No - please help me get one" data-toggle /><span>No, help me get one</span></label>
+            <label class="choice"><input type="radio" name="has_domain" value="Not sure" data-toggle /><span>Not sure</span></label>
+          </div>
+          <span class="error-msg">Please choose one.</span>
+        </div>
+
+        <div class="conditional" data-show-when="has_domain=Yes" hidden>
+          <div class="grid-2">
+            <div class="field">
+              <label for="domain_name">Your domain</label>
+              <input id="domain_name" name="domain_name" type="text" maxlength="200" placeholder="yourbusiness.com" />
+            </div>
+            <div class="field">
+              <label for="domain_registrar">Where did you buy it?</label>
+              <select id="domain_registrar" name="domain_registrar">
+                <option value="">Select…</option>
+                <option>GoDaddy</option>
+                <option>Namecheap</option>
+                <option>Cloudflare</option>
+                <option>Squarespace / Google Domains</option>
+                <option>Hostinger</option>
+                <option>Wix</option>
+                <option>Other</option>
+                <option>I don't know</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top:18px">
+            <span class="label">Do you have login access to that account?</span>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="domain_access" value="Yes" /><span>Yes</span></label>
+              <label class="choice"><input type="radio" name="domain_access" value="Someone else manages it" /><span>Someone else manages it</span></label>
+              <label class="choice"><input type="radio" name="domain_access" value="No / not sure" /><span>No / not sure</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field conditional" data-show-when="has_domain=No - please help me get one" hidden>
+          <label for="domain_ideas">Domain names you'd like</label>
+          <input id="domain_ideas" name="domain_ideas" type="text" maxlength="300" placeholder="e.g. lumencafe.com, lumen-cafe.nl" />
+        </div>
+
+        <div class="field">
+          <span class="label">Email address on your domain? <span class="hint">(like info@yourbusiness.com)</span></span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="domain_email" value="Already have it" /><span>Already have it</span></label>
+            <label class="choice"><input type="radio" name="domain_email" value="Want it set up" /><span>Want it set up</span></label>
+            <label class="choice"><input type="radio" name="domain_email" value="Not needed" /><span>Not needed</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. PAGES & FEATURES -->
+      <section class="form-card">
+        <h2><span class="num">05</span> Pages &amp; features</h2>
+        <div class="field">
+          <span class="label">Which pages do you need?</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="pages" value="Home" checked /><span>Home</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="About" /><span>About</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Services" /><span>Services</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Portfolio / Gallery" /><span>Portfolio / Gallery</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Pricing" /><span>Pricing</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Menu" /><span>Menu</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Blog / News" /><span>Blog / News</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="FAQ" /><span>FAQ</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Team" /><span>Team</span></label>
+            <label class="choice"><input type="checkbox" name="pages" value="Contact" checked /><span>Contact</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Features</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="features" value="Contact form" /><span>Contact form</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Booking / appointments" /><span>Booking</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Online shop / payments" /><span>Online payments</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Newsletter signup" /><span>Newsletter</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Google Maps" /><span>Google Maps</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Reviews / testimonials" /><span>Reviews</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Social media links / feed" /><span>Social media</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Multiple languages" /><span>Multiple languages</span></label>
+            <label class="choice"><input type="checkbox" name="features" value="Edit content myself (CMS)" /><span>Edit it myself</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. CONTENT & STYLE -->
+      <section class="form-card">
+        <h2><span class="num">06</span> Content &amp; style</h2>
+        <div class="field">
+          <span class="label">Do you have a logo?</span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="logo" value="Yes" /><span>Yes</span></label>
+            <label class="choice"><input type="radio" name="logo" value="No - need one designed" /><span>No, design one for me</span></label>
+            <label class="choice"><input type="radio" name="logo" value="Have one but want a refresh" /><span>Want a refresh</span></label>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <span class="label">Website text</span>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="texts" value="I'll write it" /><span>I'll write it</span></label>
+              <label class="choice"><input type="radio" name="texts" value="Need help writing" /><span>Need help</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label">Photos</span>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="photos" value="I have my own" /><span>I have my own</span></label>
+              <label class="choice"><input type="radio" name="photos" value="Use stock photos" /><span>Use stock photos</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">What style do you like?</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="style" value="Minimal / clean" /><span>Minimal</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Bold / colourful" /><span>Bold</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Elegant / luxury" /><span>Elegant</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Playful / fun" /><span>Playful</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Corporate / professional" /><span>Corporate</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Dark / modern" /><span>Dark &amp; modern</span></label>
+            <label class="choice"><input type="checkbox" name="style" value="Warm / natural" /><span>Warm &amp; natural</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="brand_colors">Brand colours</label>
+          <input id="brand_colors" name="brand_colors" type="text" maxlength="200" placeholder="e.g. dark green and gold — or 'no idea yet'" />
+        </div>
+        <div class="field">
+          <label for="inspiration">Websites you like (and why)</label>
+          <textarea id="inspiration" name="inspiration" rows="3" maxlength="2000" placeholder="Paste links — they don't have to be in your industry."></textarea>
+        </div>
+        <div class="field">
+          <label for="competitors">Competitors' websites</label>
+          <textarea id="competitors" name="competitors" rows="2" maxlength="1000"></textarea>
+        </div>
+      </section>
+
+      <!-- 7. BUDGET & TIMELINE -->
+      <section class="form-card">
+        <h2><span class="num">07</span> Budget &amp; timeline</h2>
+        <div class="field">
+          <span class="label">Budget <span class="req">*</span></span>
+          <div class="choices" data-required-group="budget">
+            <label class="choice"><input type="radio" name="budget" value="Under €500" /><span>Under €500</span></label>
+            <label class="choice"><input type="radio" name="budget" value="€500 – €1,000" /><span>€500 – €1,000</span></label>
+            <label class="choice"><input type="radio" name="budget" value="€1,000 – €2,500" /><span>€1,000 – €2,500</span></label>
+            <label class="choice"><input type="radio" name="budget" value="€2,500 – €5,000" /><span>€2,500 – €5,000</span></label>
+            <label class="choice"><input type="radio" name="budget" value="€5,000+" /><span>€5,000+</span></label>
+            <label class="choice"><input type="radio" name="budget" value="Not sure yet" /><span>Not sure yet</span></label>
+          </div>
+          <span class="error-msg">Please choose a range — it helps me suggest the right solution.</span>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="timeline">When do you need it?</label>
+            <select id="timeline" name="timeline">
+              <option value="">Select…</option>
+              <option>As soon as possible</option>
+              <option>Within 1 month</option>
+              <option>1 – 3 months</option>
+              <option>No rush</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="deadline">Hard deadline? (optional)</label>
+            <input id="deadline" name="deadline" type="date" />
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Help after launch? <span class="hint">(updates, hosting, small changes)</span></span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="maintenance" value="Yes, monthly care plan" /><span>Yes, ongoing</span></label>
+            <label class="choice"><input type="radio" name="maintenance" value="Only when I ask" /><span>Only when I ask</span></label>
+            <label class="choice"><input type="radio" name="maintenance" value="No" /><span>No</span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. ANYTHING ELSE -->
+      <section class="form-card">
+        <h2><span class="num">08</span> Anything else?</h2>
+        <div class="field">
+          <label for="notes">Extra details, questions or ideas</label>
+          <textarea id="notes" name="notes" rows="4" maxlength="5000"></textarea>
+        </div>
+        <div class="field">
+          <label for="referral">How did you find me?</label>
+          <input id="referral" name="referral" type="text" maxlength="200" />
+        </div>
+        <input type="text" name="company_website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="submit-wrap">
+          <button type="submit" class="btn btn-full">Send my project brief</button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+          <p class="small">I'll reply within 24 hours with next steps and a quote.</p>
+        </div>
+      </section>
+    </form>
+
+    <section class="form-card thank-you" hidden>
+      
+      <h2>Thanks — got it!</h2>
+      <p>Your project brief is on its way to me. I'll be in touch within 24 hours.</p>
+      <p style="margin-top:24px"><a href="index.html" class="btn btn-ghost">Back to homepage</a></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span class="year"></span> Edwin Dol. Designed &amp; built by me.</p>
+    <a href="index.html">Home</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

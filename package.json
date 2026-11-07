@@ -1,0 +1,10 @@
+{
+  "name": "edwin-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Edwin's website designer portfolio + client project brief form",
+  "engines": {
+    "node": ">=18"
+  }
+}
