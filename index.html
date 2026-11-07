@@ -4,18 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Edwin Dol — Website Designer</title>
-  <meta name="description" content="Edwin Dol is a website designer crafting fast, beautiful, conversion-focused websites for brands and businesses." />
+  <meta name="description" content="Edwin Dol is an independent website designer creating considered, high-end websites." />
   <meta property="og:title" content="Edwin Dol — Website Designer" />
-  <meta property="og:description" content="Fast, beautiful, conversion-focused websites." />
+  <meta name="theme-color" content="#0a0a0a" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Geist:wght@300..600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="is-loading">
   <header class="nav">
-    <a href="#top" class="logo">Edwin Dol</a>
+    <a href="#top" class="logo" data-text="site.name">Edwin Dol</a>
     <nav>
       <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
       <ul class="nav-links">
@@ -29,135 +29,82 @@
   </header>
 
   <main id="top">
+    <!-- All text below is filled in from content.json (or what you saved in the admin panel) by site.js -->
+
     <!-- HERO -->
     <section class="hero">
-      <p class="eyebrow"><span class="dot"></span> Available for new projects</p>
-      <h1>Websites, designed<br />with <em>intention.</em></h1>
-      <p class="lead">I'm Edwin Dol, an independent website designer. I create quiet, considered websites for brands that value clarity, craft and detail.</p>
+      <p class="eyebrow" data-show="site.available"><span class="dot"></span> <span data-text="site.availableText"></span></p>
+      <h1 data-rich="hero.heading"></h1>
+      <p class="lead" data-text="hero.lead"></p>
       <div class="hero-cta">
-        <a href="start.html" class="btn">Start your project</a>
-        <a href="#work" class="btn btn-ghost">Selected work</a>
+        <a href="start.html" class="btn"><span data-text="hero.ctaPrimary"></span> <span class="arrow">→</span></a>
+        <a href="#work" class="btn btn-ghost" data-text="hero.ctaSecondary"></a>
       </div>
-      <ul class="stats">
-        <li><strong data-count="40">0</strong><span>+ websites launched</span></li>
-        <li><strong data-count="5">0</strong><span>years designing</span></li>
-        <li><strong data-count="100">0</strong><span>% client focus</span></li>
-      </ul>
+      <ul class="stats" id="stats"></ul>
     </section>
 
     <!-- WORK -->
     <section id="work" class="section">
       <div class="section-head">
-        <p class="eyebrow">Selected work</p>
-        <h2>Recent projects</h2>
+        <h2 data-rich="work.heading"></h2>
+        <p class="eyebrow" data-text="work.eyebrow"></p>
       </div>
-      <div class="projects">
-        <!-- Replace these with your real projects. Swap the .thumb gradient for an <img> if you have screenshots. -->
-        <article class="project reveal">
-          <div class="thumb" style="--a:#e9e6df;--b:#d9d4c9"><span>Lumen Café</span></div>
-          <div class="project-info">
-            <h3>Lumen Café</h3>
-            <p>Website redesign &amp; online ordering</p>
-            <ul class="tags"><li>Web Design</li><li>E-commerce</li></ul>
-          </div>
-        </article>
-        <article class="project reveal">
-          <div class="thumb" style="--a:#dfe2e4;--b:#c9cfd3"><span>Northwind Studio</span></div>
-          <div class="project-info">
-            <h3>Northwind Studio</h3>
-            <p>Portfolio site for an architecture firm</p>
-            <ul class="tags"><li>UI / UX</li><li>Portfolio</li></ul>
-          </div>
-        </article>
-        <article class="project reveal">
-          <div class="thumb" style="--a:#e3e3dc;--b:#cfd0c4"><span>FitPulse</span></div>
-          <div class="project-info">
-            <h3>FitPulse</h3>
-            <p>Landing page for a fitness app launch</p>
-            <ul class="tags"><li>Landing Page</li><li>Branding</li></ul>
-          </div>
-        </article>
-        <article class="project reveal">
-          <div class="thumb" style="--a:#e8e1dd;--b:#d6cbc5"><span>Velvet Salon</span></div>
-          <div class="project-info">
-            <h3>Velvet Salon</h3>
-            <p>Booking-focused website for a beauty salon</p>
-            <ul class="tags"><li>Web Design</li><li>Booking</li></ul>
-          </div>
-        </article>
-      </div>
+      <div class="projects" id="projects"></div>
     </section>
 
     <!-- SERVICES -->
     <section id="services" class="section">
       <div class="section-head">
-        <p class="eyebrow">What I do</p>
-        <h2>Services</h2>
+        <h2 data-rich="services.heading"></h2>
+        <p class="eyebrow" data-text="services.eyebrow"></p>
       </div>
-      <div class="services">
-        <div class="service reveal"><span class="num">01</span><h3>Website Design</h3><p>Custom, modern designs tailored to your brand — no cookie-cutter templates.</p></div>
-        <div class="service reveal"><span class="num">02</span><h3>Development</h3><p>Fast, responsive builds that look great on every phone, tablet and desktop.</p></div>
-        <div class="service reveal"><span class="num">03</span><h3>Landing Pages</h3><p>High-converting pages for launches, campaigns and lead generation.</p></div>
-        <div class="service reveal"><span class="num">04</span><h3>Redesigns</h3><p>Give your outdated site a fresh look, better speed and clearer messaging.</p></div>
-      </div>
+      <div class="services" id="services-list"></div>
     </section>
 
     <!-- PROCESS -->
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">How I work</p>
-        <h2>Simple process, great results</h2>
+        <h2 data-rich="process.heading"></h2>
+        <p class="eyebrow" data-text="process.eyebrow"></p>
       </div>
-      <ol class="process">
-        <li class="reveal"><h3>Brief</h3><p>You fill in my <a href="start.html" class="link">project form</a> so I know exactly what you need.</p></li>
-        <li class="reveal"><h3>Design</h3><p>I create the look and layout, and we refine it together.</p></li>
-        <li class="reveal"><h3>Build</h3><p>Your site gets built — fast, responsive and SEO-ready.</p></li>
-        <li class="reveal"><h3>Launch</h3><p>We go live on your domain, and I'm here for support afterwards.</p></li>
-      </ol>
+      <ol class="process" id="process-list"></ol>
     </section>
 
     <!-- ABOUT -->
     <section id="about" class="section about">
-      <div class="about-photo reveal">
-        <!-- Replace with your photo: <img src="me.jpg" alt="Edwin Dol" /> -->
-        <div class="photo-placeholder">ED</div>
-      </div>
+      <div class="about-photo reveal" id="about-photo"></div>
       <div class="about-text reveal">
-        <p class="eyebrow">About me</p>
-        <h2>Design with purpose.</h2>
-        <p>I'm Edwin Dol, a website designer who believes a great website should do more than look good — it should help your business grow. I combine clean design, smooth user experience and solid code to build sites that feel effortless to use.</p>
-        <p>When I'm not designing, you'll find me exploring new design trends, gaming, or sketching ideas for the next project.</p>
-        <ul class="skills">
-          <li>Figma</li><li>HTML / CSS</li><li>JavaScript</li><li>Webflow</li><li>WordPress</li><li>Responsive Design</li><li>SEO</li>
-        </ul>
+        <p class="eyebrow" data-text="about.eyebrow"></p>
+        <h2 data-rich="about.heading"></h2>
+        <div class="about-body" data-paras="about.body"></div>
+        <ul class="skills" id="skills"></ul>
       </div>
     </section>
 
     <!-- CONTACT -->
     <section id="contact" class="section contact">
       <div class="contact-intro reveal">
-        <p class="eyebrow">Contact</p>
-        <h2>Got a question?<br /><em>Say hello.</em></h2>
-        <p>Quick question? Send a message here. Ready to start a website? Use the <a href="start.html" class="link">project form</a> instead — it helps me give you a quote faster.</p>
-        <ul class="contact-links">
-          <li><a href="mailto:edwin13.raptor@gmail.com">edwin13.raptor@gmail.com</a></li>
-          <!-- Add your socials: -->
-          <li><a href="#" target="_blank" rel="noopener">Instagram</a></li>
-          <li><a href="#" target="_blank" rel="noopener">LinkedIn</a></li>
-        </ul>
+        <p class="eyebrow" data-text="contact.eyebrow"></p>
+        <h2 data-rich="contact.heading"></h2>
+        <p data-text="contact.text"></p>
+        <a href="start.html" class="link-arrow">Fill in the project form <span class="arrow">→</span></a>
+        <ul class="contact-links" id="contact-links"></ul>
       </div>
       <form class="contact-form reveal" data-form="contact" novalidate>
         <div class="field">
           <label for="name">Your name</label>
           <input id="name" name="name" type="text" required maxlength="100" autocomplete="name" />
+          <span class="error-msg">Please enter your name.</span>
         </div>
         <div class="field">
           <label for="email">Email</label>
           <input id="email" name="email" type="email" required maxlength="200" autocomplete="email" />
+          <span class="error-msg">Please enter a valid email.</span>
         </div>
         <div class="field">
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="5" required maxlength="5000"></textarea>
+          <span class="error-msg">Please write a message.</span>
         </div>
         <input type="text" name="company_website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <button type="submit" class="btn btn-full">Send message</button>
@@ -167,10 +114,11 @@
   </main>
 
   <footer class="footer">
-    <p>© <span class="year"></span> Edwin Dol. Designed &amp; built by me.</p>
+    <p>© <span class="year"></span> <span data-text="site.name"></span></p>
     <a href="#top">Back to top ↑</a>
   </footer>
 
   <script src="script.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>

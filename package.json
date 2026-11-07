@@ -1,10 +1,13 @@
 {
-  "name": "edwin-portfolio",
-  "version": "1.0.0",
+  "name": "edwin-dol-portfolio",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "Edwin's website designer portfolio + client project brief form",
+  "description": "Edwin Dol's portfolio with a built-in admin panel and client project brief form",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.27.0"
   }
 }

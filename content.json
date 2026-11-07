@@ -1,0 +1,69 @@
+{
+  "site": {
+    "name": "Edwin Dol",
+    "title": "Edwin Dol — Website Designer",
+    "description": "Edwin Dol is an independent website designer creating considered, high-end websites for brands that care about detail.",
+    "email": "edwin13.raptor@gmail.com",
+    "available": true,
+    "availableText": "Available for new projects",
+    "accent": "#d4ff5a",
+    "socials": [
+      { "label": "Instagram", "url": "" },
+      { "label": "LinkedIn", "url": "" },
+      { "label": "Dribbble", "url": "" }
+    ]
+  },
+  "hero": {
+    "heading": "Websites, designed\nwith *intention.*",
+    "lead": "I'm Edwin Dol, an independent website designer. I create quiet, considered websites for brands that value clarity, craft and detail.",
+    "ctaPrimary": "Start your project",
+    "ctaSecondary": "Selected work"
+  },
+  "stats": [
+    { "value": "40", "label": "Websites launched" },
+    { "value": "5", "label": "Years designing" },
+    { "value": "24h", "label": "Reply time" }
+  ],
+  "work": {
+    "eyebrow": "Selected work",
+    "heading": "Recent projects",
+    "projects": [
+      { "id": "p1", "title": "Lumen Café", "subtitle": "Website redesign & online ordering", "tags": ["Web Design", "E-commerce"], "image": "", "url": "" },
+      { "id": "p2", "title": "Northwind Studio", "subtitle": "Portfolio site for an architecture firm", "tags": ["UI / UX", "Portfolio"], "image": "", "url": "" },
+      { "id": "p3", "title": "FitPulse", "subtitle": "Landing page for a fitness app launch", "tags": ["Landing Page", "Branding"], "image": "", "url": "" },
+      { "id": "p4", "title": "Velvet Salon", "subtitle": "Booking-focused website for a beauty salon", "tags": ["Web Design", "Booking"], "image": "", "url": "" }
+    ]
+  },
+  "services": {
+    "eyebrow": "What I do",
+    "heading": "Services",
+    "items": [
+      { "id": "s1", "title": "Website Design", "text": "Custom, considered designs tailored to your brand — no templates." },
+      { "id": "s2", "title": "Development", "text": "Fast, responsive builds that feel effortless on every device." },
+      { "id": "s3", "title": "Landing Pages", "text": "Focused pages for launches, campaigns and lead generation." },
+      { "id": "s4", "title": "Redesigns", "text": "A fresh look, better speed and clearer messaging for your current site." }
+    ]
+  },
+  "process": {
+    "eyebrow": "How I work",
+    "heading": "Simple process,\n*great results.*",
+    "steps": [
+      { "id": "st1", "title": "Brief", "text": "You fill in my project form so I know exactly what you need." },
+      { "id": "st2", "title": "Design", "text": "I create the look and layout, and we refine it together." },
+      { "id": "st3", "title": "Build", "text": "Your site gets built — fast, responsive and SEO-ready." },
+      { "id": "st4", "title": "Launch", "text": "We go live on your domain, and I'm here for support afterwards." }
+    ]
+  },
+  "about": {
+    "eyebrow": "About",
+    "heading": "Design with *purpose.*",
+    "body": "I'm Edwin Dol, a website designer who believes a great website should do more than look good — it should help your business grow. I combine clean design, smooth user experience and solid code to build sites that feel effortless to use.\n\nWhen I'm not designing, you'll find me exploring new design trends, gaming, or sketching ideas for the next project.",
+    "photo": "",
+    "skills": ["Figma", "HTML / CSS", "JavaScript", "Webflow", "WordPress", "Responsive Design", "SEO"]
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "heading": "Got a question?\n*Say hello.*",
+    "text": "Quick question? Send a message here. Ready to start a website? Use the project form — it helps me give you a quote faster."
+  }
+}
