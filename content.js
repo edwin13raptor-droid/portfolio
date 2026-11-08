@@ -1,4 +1,6 @@
-{
+// Default website content. The admin panel saves changes on top of this (stored in Vercel Blob).
+// It is a .js file (not .json) so the site also works when you open the HTML files directly.
+window.DEFAULT_CONTENT = {
   "site": {
     "name": "Edwin Dol",
     "role": "Website Designer",
@@ -10,9 +12,9 @@
     "availableText": "Available for new projects",
     "accent": "#d4ff5a",
     "socials": [
-      { "label": "Instagram", "url": "" },
-      { "label": "LinkedIn", "url": "" },
-      { "label": "Dribbble", "url": "" }
+      { "label": "Instagram", "url": "https://instagram.com" },
+      { "label": "LinkedIn", "url": "https://linkedin.com" },
+      { "label": "Dribbble", "url": "https://dribbble.com" }
     ]
   },
   "home": {
@@ -31,6 +33,12 @@
     "featuredText": "A few recent projects — each one designed from scratch around the brand, the audience and the goal.",
     "introHeading": "I design websites that feel *effortless* — and work hard for your business.",
     "introText": "Every site I make starts with understanding what you need it to do. Then I design something that looks premium, loads fast and turns visitors into customers.",
+    "marquee": ["Design", "Develop", "Launch", "Grow"],
+    "playgroundHeading": "Try it — *your* site,\nyour style.",
+    "playgroundText": "Pick a style and a colour and watch the website change live. Every site I build is designed around your brand like this.",
+    "ctaHeading": "Your business deserves\na site like *this.*",
+    "ctaText": "Fast, beautiful and built to win customers. Tell me about your project and get a quote within 24 hours.",
+    "ctaButton": "Start your project",
     "testimonialsHeading": "Kind *words*",
     "testimonials": [
       { "quote": "Edwin completely transformed how our café looks online. Orders through the website doubled within two months.", "name": "Sanne de Vries", "role": "Owner, Lumen Café" },
@@ -123,4 +131,4 @@
     "briefText": "Fill in the project brief — about 5 minutes — and get a quote within 24 hours.",
     "response": "I reply within 24 hours, Monday to Saturday."
   }
-}
+};

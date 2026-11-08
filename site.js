@@ -378,6 +378,11 @@
     // Home
     list("stats", c.home?.stats, (s) => `<li class="reveal"><strong>${esc(s.value)}</strong><span>${esc(s.label)}</span></li>`);
     list("clients", c.home?.clients, (n) => `<li>${esc(n)}</li>`);
+    // Word band: one "set" repeated twice so showcase.js can loop it seamlessly
+    const words = c.home?.marquee || [];
+    const set = [...words, ...words];
+    list("marquee", [...set, ...set], (wd, i) =>
+      `<span class="${i % 2 ? "w-fill" : "w-out"}">${esc(wd)}</span><span class="star">✦</span>`);
     list("featured", projects.slice(0, 3), (p, i) => projectCard(p, i, i === 0));
     list("services-teaser", c.services?.items, (s, i) => `
       <a href="services.html" class="teaser reveal"><span class="num">${pad(i + 1)}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p><span class="teaser-arrow">→</span></a>`);
@@ -441,7 +446,9 @@
   }
 
   async function load() {
-    const defaults = await fetch("content.json", { cache: "no-cache" }).then((r) => r.json());
+    // content.js sets window.DEFAULT_CONTENT (works even when the page is opened as a file)
+    const defaults = window.DEFAULT_CONTENT;
+    if (location.protocol === "file:") return defaults;
     try {
       const r = await fetch("/api/content", { headers: { Accept: "application/json" } });
       if (r.ok) {
@@ -453,6 +460,13 @@
   }
 
   window.Site = { content: null, render, rich, esc, merge, fx };
+
+  // Draw the top menu (and phone hamburger) + footer right away from the defaults,
+  // so navigation never waits on anything loading
+  if (window.DEFAULT_CONTENT) {
+    renderHeader(window.DEFAULT_CONTENT);
+    renderFooter(window.DEFAULT_CONTENT);
+  }
 
   const needsPrices = () => document.querySelector("#packages, #price-calc, input[data-budget]");
   load()

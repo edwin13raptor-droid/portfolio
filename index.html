@@ -18,6 +18,10 @@
   <main id="top">
     <!-- Text is filled in from content.json / the admin panel by site.js -->
     <section class="hero">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+        <canvas class="hero-canvas"></canvas>
+      </div>
       <p class="eyebrow" data-show="site.available"><span class="dot"></span> <span data-text="site.availableText"></span></p>
       <h1 data-rich="home.heading"></h1>
       <div class="hero-bottom">
@@ -57,12 +61,106 @@
       <div class="featured" id="featured"></div>
     </section>
 
+    <!-- Big moving word band (speeds up with scrolling) -->
+    <section class="band" aria-hidden="true">
+      <div class="band-track" id="marquee"></div>
+    </section>
+
     <section class="section">
       <div class="section-head">
         <h2>What I <em>do</em></h2>
         <a href="services.html" class="btn btn-ghost">Services &amp; pricing <span class="arrow">→</span></a>
       </div>
       <div class="teasers" id="services-teaser"></div>
+    </section>
+
+    <!-- Interactive style playground -->
+    <section class="section playground">
+      <div class="section-head">
+        <div>
+          <h2 data-rich="home.playgroundHeading"></h2>
+          <p class="section-sub" data-text="home.playgroundText"></p>
+        </div>
+      </div>
+      <div class="pg reveal" id="pg" data-style="minimal" data-mode="dark" style="--pg:#d4ff5a">
+        <div class="pg-controls">
+          <div class="pg-group">
+            <p class="pg-label">Style</p>
+            <div class="pg-chips" data-pg="style">
+              <button type="button" data-v="minimal" class="on">Minimal</button>
+              <button type="button" data-v="bold">Bold</button>
+              <button type="button" data-v="elegant">Elegant</button>
+              <button type="button" data-v="playful">Playful</button>
+            </div>
+          </div>
+          <div class="pg-group">
+            <p class="pg-label">Colour</p>
+            <div class="pg-swatches" data-pg="color">
+              <button type="button" data-v="#d4ff5a" style="--s:#d4ff5a" class="on" aria-label="Lime"></button>
+              <button type="button" data-v="#8b7bff" style="--s:#8b7bff" aria-label="Violet"></button>
+              <button type="button" data-v="#3ee6c1" style="--s:#3ee6c1" aria-label="Teal"></button>
+              <button type="button" data-v="#ff7a59" style="--s:#ff7a59" aria-label="Coral"></button>
+              <button type="button" data-v="#ffd23f" style="--s:#ffd23f" aria-label="Sun"></button>
+            </div>
+          </div>
+          <div class="pg-group">
+            <p class="pg-label">Mode</p>
+            <div class="pg-chips" data-pg="mode">
+              <button type="button" data-v="dark" class="on">Dark</button>
+              <button type="button" data-v="light">Light</button>
+            </div>
+          </div>
+          <div class="pg-group">
+            <label class="pg-label" for="pg-name">Your business name</label>
+            <input id="pg-name" class="pg-name" type="text" value="Your Brand" maxlength="22" autocomplete="off" />
+          </div>
+          <a href="start.html" class="btn">I want this <span class="arrow">→</span></a>
+        </div>
+
+        <div class="pg-preview">
+          <div class="pg-bar"><i></i><i></i><i></i><span class="pg-url">yourbrand.com</span></div>
+          <div class="pg-site">
+            <div class="pg-nav"><b class="pg-logo">Your Brand</b><span>Shop</span><span>About</span><span>Contact</span><span class="pg-navbtn">Book now</span></div>
+            <div class="pg-hero">
+              <p class="pg-kicker">New collection</p>
+              <h3 class="pg-title">Simple. Honest.<br />Yours.</h3>
+              <p class="pg-text">A website that feels like your brand — and turns visitors into customers.</p>
+              <span class="pg-btn">Get started</span>
+            </div>
+            <div class="pg-media"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plans (prices convert to the visitor's currency) -->
+    <section class="section pricing-preview">
+      <div class="section-head">
+        <div>
+          <h2>Simple <em>plans</em></h2>
+          <p class="section-sub" data-text="services.packagesText"></p>
+        </div>
+        <div class="currency">
+          <span>Currency</span>
+          <select id="currency-picker" aria-label="Show prices in"></select>
+        </div>
+      </div>
+      <div class="packages" id="packages"></div>
+      <div class="pricing-links">
+        <p class="currency-note" id="currency-note"></p>
+        <a href="services.html#price-calc" class="link-arrow">Calculate your exact price <span class="arrow">→</span></a>
+      </div>
+    </section>
+
+    <!-- Bright call to action -->
+    <section class="cta-band reveal">
+      <div class="cta-inner">
+        <h2 data-rich="home.ctaHeading"></h2>
+        <div class="cta-side">
+          <p data-text="home.ctaText"></p>
+          <a href="start.html" class="btn btn-dark"><span data-text="home.ctaButton"></span> <span class="arrow">→</span></a>
+        </div>
+      </div>
     </section>
 
     <section class="section">
@@ -76,7 +174,9 @@
   <footer id="site-footer"></footer>
 
   <script src="script.js"></script>
+  <script src="content.js"></script>
   <script src="site.js"></script>
   <script src="motion.js"></script>
+  <script src="showcase.js"></script>
 </body>
 </html>

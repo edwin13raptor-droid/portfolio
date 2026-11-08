@@ -4,18 +4,19 @@ Dark, minimalist portfolio with a **built-in admin panel** and a **client projec
 
 | File | What it is |
 |---|---|
-| `index.html`, `work.html`, `services.html`, `about.html`, `contact.html` | The site pages. Header, footer and all text/images are filled in by `site.js` from your saved content (or `content.json` as the default). |
+| `index.html`, `work.html`, `services.html`, `about.html`, `contact.html` | The site pages. Header, footer and all text/images are filled in by `site.js` from your saved content (or `content.js` as the default). |
+| `showcase.js` | Colourful extras: interactive hero dot field, scroll-speed word band, the live "try your own style" playground, 3D tilt on projects and a mouse spotlight on cards. |
 | `motion.js` | Animations: word-by-word headings, custom cursor, magnetic buttons, parallax, count-ups, scroll progress. Turned off automatically for people who prefer reduced motion. |
 | `api/rates.js` | Detects the visitor's country and returns live exchange rates, so prices show in their currency. |
 | `start.html` | Client project brief — send this link to customers (`yoursite.com/start`). |
 | `admin.js` / `admin.css` | Admin panel. Only loads when you open it. |
-| `content.json` | Default content (used until you save something in the admin panel). |
+| `content.js` | Default content (used until you save something in the admin panel). |
 | `api/send.js` | Emails contact messages + project briefs to you via Resend. |
 | `api/auth.js` | Admin login/logout (password → secure cookie). |
 | `api/content.js` | Loads/saves site content in Vercel Blob (keeps the last 20 versions). |
 | `api/upload.js` | Image uploads to Vercel Blob. |
 
-No build step — plain HTML/CSS/JS + Vercel functions.
+You can open `index.html` straight from the folder to look at the site (the admin panel and emails need the live site). No build step — plain HTML/CSS/JS + Vercel functions.
 
 ---
 
@@ -27,7 +28,7 @@ On the live site press **Ctrl + Shift + A** (Mac: **Cmd + Shift + A**) — or go
 - Tabs: **General**, **Home**, **Work**, **Services** (pricing, packages, FAQ), **About**, **Contact**. The panel opens on the tab for the page you're on and stays open while you move between pages.
 - Changes preview **live** on the page behind the panel. Click **Save changes** (or Ctrl+S) to publish.
 - In headings, wrap words in `*stars*` to make them grey, e.g. `with *intention.*`
-- **Backup** downloads all your content as `content.json`.
+- **Backup** downloads all your content as `content.js`.
 - **Esc** closes the panel.
 
 > Some browsers use Ctrl+Shift+A for their own shortcut (e.g. tab search). If the panel doesn't open, click on the page first, or use `/#admin`.

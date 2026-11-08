@@ -16,6 +16,144 @@ const io = new IntersectionObserver(
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 window.observeReveal = (el) => io.observe(el);
 
+// ---------- Custom dropdowns ----------
+// Native <select> menus use the operating system's colours (bright blue highlight etc.),
+// which can't be styled reliably. Each select gets a matching custom dropdown; the real
+// <select> stays hidden underneath, so forms, validation and change events work as before.
+function enhanceSelect(sel) {
+  if (sel.dataset.enhanced || sel.closest(".adm")) return;
+  sel.dataset.enhanced = "1";
+
+  const wrap = document.createElement("div");
+  wrap.className = "cselect" + (sel.closest(".currency") ? " cselect-pill" : "");
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+  sel.classList.add("cselect-native");
+  sel.tabIndex = -1;
+  sel.setAttribute("aria-hidden", "true");
+
+  const uid = sel.id || "sel" + Math.random().toString(36).slice(2, 8);
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "cselect-btn";
+  btn.id = uid + "-btn";
+  btn.setAttribute("aria-haspopup", "listbox");
+  btn.setAttribute("aria-expanded", "false");
+  const label = sel.id && document.querySelector(`label[for="${sel.id}"]`);
+  if (label) { label.htmlFor = btn.id; btn.setAttribute("aria-labelledby", `${label.id || (label.id = uid + "-label")} ${btn.id}`); }
+  else if (sel.getAttribute("aria-label")) btn.setAttribute("aria-label", sel.getAttribute("aria-label"));
+
+  const list = document.createElement("ul");
+  list.className = "cselect-list";
+  list.setAttribute("role", "listbox");
+  list.id = uid + "-list";
+  list.hidden = true;
+  btn.setAttribute("aria-controls", list.id);
+  wrap.append(btn, list);
+
+  let active = 0;
+  let typed = "", typedAt = 0;
+
+  function build() {
+    list.innerHTML = "";
+    [...sel.options].forEach((o, i) => {
+      const li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.id = `${list.id}-${i}`;
+      li.dataset.i = i;
+      li.textContent = o.textContent;
+      if (o.value === "") li.classList.add("is-placeholder");
+      li.setAttribute("aria-selected", String(i === sel.selectedIndex));
+      list.appendChild(li);
+    });
+    sync();
+  }
+  function sync() {
+    const o = sel.options[sel.selectedIndex];
+    btn.textContent = o ? o.textContent : "";
+    btn.classList.toggle("is-empty", !o || o.value === "");
+    list.querySelectorAll("li").forEach((li) => li.setAttribute("aria-selected", String(Number(li.dataset.i) === sel.selectedIndex)));
+  }
+  function highlight(i) {
+    const items = list.children;
+    if (!items.length) return;
+    active = Math.max(0, Math.min(items.length - 1, i));
+    [...items].forEach((li, n) => li.classList.toggle("active", n === active));
+    btn.setAttribute("aria-activedescendant", items[active].id);
+    items[active].scrollIntoView({ block: "nearest" });
+  }
+  function open() {
+    if (!list.hidden) return;
+    document.querySelectorAll(".cselect.open").forEach((w) => w !== wrap && w._close?.());
+    list.hidden = false;
+    wrap.classList.add("open");
+    btn.setAttribute("aria-expanded", "true");
+    // open upwards if there isn't room below
+    const r = btn.getBoundingClientRect();
+    wrap.classList.toggle("up", innerHeight - r.bottom < Math.min(300, list.scrollHeight + 16) && r.top > innerHeight - r.bottom);
+    highlight(Math.max(0, sel.selectedIndex));
+  }
+  function close() {
+    if (list.hidden) return;
+    list.hidden = true;
+    wrap.classList.remove("open", "up");
+    btn.setAttribute("aria-expanded", "false");
+    btn.removeAttribute("aria-activedescendant");
+  }
+  wrap._close = close;
+  function choose(i) {
+    if (sel.selectedIndex !== i) {
+      sel.selectedIndex = i;
+      sel.dispatchEvent(new Event("input", { bubbles: true }));
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    sync();
+    close();
+    btn.focus();
+  }
+
+  btn.addEventListener("click", () => (list.hidden ? open() : close()));
+  list.addEventListener("mousedown", (e) => e.preventDefault()); // keep focus on the button
+  list.addEventListener("click", (e) => {
+    const li = e.target.closest("li");
+    if (li) choose(Number(li.dataset.i));
+  });
+  list.addEventListener("mousemove", (e) => {
+    const li = e.target.closest("li");
+    if (li && Number(li.dataset.i) !== active) highlight(Number(li.dataset.i));
+  });
+  btn.addEventListener("keydown", (e) => {
+    const isOpen = !list.hidden;
+    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key) && !isOpen) { e.preventDefault(); return open(); }
+    if (!isOpen) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); highlight(active + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); highlight(active - 1); }
+    else if (e.key === "Home") { e.preventDefault(); highlight(0); }
+    else if (e.key === "End") { e.preventDefault(); highlight(list.children.length - 1); }
+    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(active); }
+    else if (e.key === "Escape") { e.preventDefault(); close(); }
+    else if (e.key === "Tab") close();
+    else if (e.key.length === 1) {
+      // type-ahead: jump to the option starting with the typed letters
+      const now = Date.now();
+      typed = (now - typedAt > 700 ? "" : typed) + e.key.toLowerCase();
+      typedAt = now;
+      const idx = [...sel.options].findIndex((o) => o.textContent.toLowerCase().startsWith(typed));
+      if (idx >= 0) highlight(idx);
+    }
+  });
+  btn.addEventListener("blur", () => setTimeout(() => { if (!wrap.contains(document.activeElement)) close(); }, 120));
+  document.addEventListener("pointerdown", (e) => { if (!wrap.contains(e.target)) close(); });
+
+  sel.addEventListener("change", sync);
+  sel.form?.addEventListener("reset", () => setTimeout(sync));
+  // options can be filled in later (e.g. the currency picker) → rebuild when they change
+  new MutationObserver(build).observe(sel, { childList: true, subtree: true, characterData: true });
+  build();
+}
+window.enhanceSelects = (root = document) => root.querySelectorAll("select").forEach(enhanceSelect);
+window.enhanceSelects();
+
 // ---------- Count-up stats ----------
 document.querySelectorAll("[data-count]").forEach((el) => {
   const target = Number(el.dataset.count);
