@@ -23,14 +23,15 @@ window.DEFAULT_CONTENT = {
     "ctaPrimary": "Start your project",
     "ctaSecondary": "View work",
     "stats": [
-      { "value": "40+", "label": "Websites launched" },
-      { "value": "5", "label": "Years designing" },
-      { "value": "98%", "label": "Happy clients" },
-      { "value": "24h", "label": "Reply time" }
+      { "value": "100%", "label": "Custom design — no templates" },
+      { "value": "24h", "label": "Reply time" },
+      { "value": "1 week", "label": "To launch a homepage" },
+      { "value": "7+", "label": "Main pages capped in price" }
     ],
-    "clients": ["Lumen Café", "Northwind Studio", "FitPulse", "Velvet Salon", "Atlas Legal", "Kōji Ramen", "Nordic Living", "Bloom & Co"],
+    "showClients": false,
+    "clients": ["Add your first client here"],
     "featuredHeading": "Selected *work*",
-    "featuredText": "A few recent projects — each one designed from scratch around the brand, the audience and the goal.",
+    "featuredText": "Two concept sites — click one to open its full homepage. Each is designed from scratch around the brand, the audience and the goal.",
     "introHeading": "I design websites that feel *effortless* — and work hard for your business.",
     "introText": "Every site I make starts with understanding what you need it to do. Then I design something that looks premium, loads fast and turns visitors into customers.",
     "marquee": ["Design", "Develop", "Launch", "Grow"],
@@ -40,23 +41,19 @@ window.DEFAULT_CONTENT = {
     "ctaText": "Fast, beautiful and built to win customers. Tell me about your project and get a quote within 24 hours.",
     "ctaButton": "Start your project",
     "testimonialsHeading": "Kind *words*",
+    "showTestimonials": false,
     "testimonials": [
-      { "quote": "Edwin completely transformed how our café looks online. Orders through the website doubled within two months.", "name": "Sanne de Vries", "role": "Owner, Lumen Café" },
-      { "quote": "Calm, quick and incredibly detail-oriented. He understood our brand better than we did.", "name": "Mark Jansen", "role": "Founder, Northwind Studio" },
-      { "quote": "The launch page looked so good people asked who designed it. Worth every euro.", "name": "Lisa Bakker", "role": "Marketing, FitPulse" }
+      { "quote": "Replace this with a real quote from your first happy client.", "name": "Client name", "role": "Role, Company" },
+      { "quote": "Add a second real testimonial here — then switch this section on in the admin panel.", "name": "Client name", "role": "Role, Company" }
     ]
   },
   "work": {
     "eyebrow": "Work",
     "heading": "Selected *projects*",
-    "intro": "Websites for cafés, studios, salons and startups. Every one custom-designed, fast and built to grow the business behind it.",
+    "intro": "Concept websites that show what I can build for you. Click a project to open its full homepage — each one is custom-designed, fast and built to grow the business behind it.",
     "projects": [
-      { "id": "p1", "title": "Lumen Café", "subtitle": "Website redesign & online ordering", "category": "Hospitality", "year": "2026", "color": "#c98b5a", "tags": ["Web Design", "E-commerce"], "image": "", "url": "" },
-      { "id": "p2", "title": "Northwind Studio", "subtitle": "Portfolio site for an architecture firm", "category": "Architecture", "year": "2026", "color": "#7f97b2", "tags": ["UI / UX", "Portfolio"], "image": "", "url": "" },
-      { "id": "p3", "title": "FitPulse", "subtitle": "Launch page for a fitness app", "category": "Tech", "year": "2025", "color": "#9fc46a", "tags": ["Landing Page", "Branding"], "image": "", "url": "" },
-      { "id": "p4", "title": "Velvet Salon", "subtitle": "Booking-focused website for a beauty salon", "category": "Beauty", "year": "2025", "color": "#b98aa6", "tags": ["Web Design", "Booking"], "image": "", "url": "" },
-      { "id": "p5", "title": "Atlas Legal", "subtitle": "Trust-first website for a law firm", "category": "Professional", "year": "2025", "color": "#a39a86", "tags": ["Web Design", "Copywriting"], "image": "", "url": "" },
-      { "id": "p6", "title": "Kōji Ramen", "subtitle": "Menu, story and reservations", "category": "Hospitality", "year": "2024", "color": "#d0694f", "tags": ["Web Design", "Reservations"], "image": "", "url": "" }
+      { "id": "p1", "title": "Lumen Café", "subtitle": "Concept site — a warm neighbourhood café with menu and online orders", "category": "Hospitality", "year": "2026", "color": "#c98b5a", "tags": ["Concept", "Web Design", "Ordering"], "image": "", "url": "demos/lumen-cafe/index.html" },
+      { "id": "p2", "title": "Northwind Studio", "subtitle": "Concept site — a minimal portfolio for an architecture studio", "category": "Architecture", "year": "2026", "color": "#7f97b2", "tags": ["Concept", "UI / UX", "Portfolio"], "image": "", "url": "demos/northwind-studio/index.html" }
     ]
   },
   "services": {
@@ -70,14 +67,16 @@ window.DEFAULT_CONTENT = {
       { "id": "s4", "title": "Care & Support", "text": "Hosting, updates and small changes, so your site stays perfect.", "points": ["Hosting & domain help", "Monthly updates", "Priority support"] }
     ],
     "packagesHeading": "Pricing",
-    "packagesText": "Simple, transparent pricing: main pages are capped, inner pages are a small flat fee each.",
+    "packagesText": "Simple, transparent pricing: main pages and inner pages each have a price cap, so big sites never get out of hand.",
     "pricing": {
       "currency": "USD",
       "homePage": 100,
       "extraPage": 150,
       "largeAfter": 6,
       "largePrice": 1000,
-      "innerPage": 25
+      "innerPage": 25,
+      "innerCapAfter": 30,
+      "innerCap": 750
     },
     "packages": [
       { "id": "pk1", "name": "Single page", "amount": 100, "from": false, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
@@ -99,7 +98,7 @@ window.DEFAULT_CONTENT = {
       { "id": "f4", "q": "What do you need from me?", "a": "Your logo (if you have one), some photos and a few words about your business. I can help with the rest." },
       { "id": "f5", "q": "How does payment work?", "a": "50% to start, 50% at launch. For larger projects we can split it into more parts." },
       { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in US dollars) at today's exchange rate. The final quote is confirmed after the brief." },
-      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at a maximum price; inner pages are a small flat fee each." }
+      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at $1,000 from 7 pages; inner pages are $25 each, capped at $750 once you have more than 30." }
     ]
   },
   "about": {

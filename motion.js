@@ -153,7 +153,7 @@
     cursor.classList.toggle("hide", !!(inAdmin || field));
     cursor.classList.toggle("view", !!project && !inAdmin);
     cursor.classList.toggle("link", !project && !!link && !inAdmin);
-    label.textContent = project ? (project.matches("a") ? "Visit" : "View") : "";
+    label.textContent = project ? (project.dataset.open ? "Open" : project.matches("a") ? "Visit" : "View") : "";
   });
   addEventListener("mousedown", () => cursor.classList.add("down"));
   addEventListener("mouseup", () => cursor.classList.remove("down"));

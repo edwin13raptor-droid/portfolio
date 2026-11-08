@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lumen Café — Concept site by Edwin Dol</title>
+  <meta name="description" content="Concept website for a fictional neighbourhood café, designed by Edwin Dol." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>if (self !== top) document.documentElement.classList.add("framed");</script>
+  <style>
+    .framed .ribbon { display: none; }
+    :root { --cream: #f5eee4; --paper: #fbf7f1; --espresso: #2a1d16; --bean: #5b4033; --terra: #c98b5a; --sage: #9aa889; --line: #e4d8c8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--cream); color: var(--espresso); font: 400 1rem/1.6 "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -0.02em; line-height: 1.02; }
+    em { font-style: italic; font-weight: 400; color: var(--terra); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 999px; background: var(--espresso); color: var(--cream); font-weight: 500; transition: transform .3s, background .3s; }
+    .btn:hover { transform: translateY(-2px); background: var(--bean); }
+    .btn.ghost { background: transparent; color: var(--espresso); box-shadow: inset 0 0 0 1.5px var(--espresso); }
+    .btn.ghost:hover { background: var(--espresso); color: var(--cream); }
+
+    /* concept ribbon */
+    .ribbon { background: var(--espresso); color: #d9cbbb; font-size: .82rem; text-align: center; padding: 8px 16px; }
+    .ribbon a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+    /* nav */
+    nav { display: flex; align-items: center; gap: 32px; padding: 22px 0; }
+    .logo { display: flex; align-items: center; gap: 10px; font: 600 1.6rem "Fraunces", serif; letter-spacing: -0.03em; margin-right: auto; }
+    .logo svg { width: 30px; height: 30px; }
+    nav a.link { font-weight: 500; opacity: .75; transition: opacity .2s; }
+    nav a.link:hover { opacity: 1; }
+
+    /* hero */
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px; align-items: center; padding-block: 56px 90px; }
+    .open { display: inline-flex; align-items: center; gap: 8px; background: var(--paper); border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px; font-size: .86rem; font-weight: 500; margin-bottom: 26px; }
+    .open i { width: 8px; height: 8px; border-radius: 50%; background: #6da35a; box-shadow: 0 0 0 4px rgba(109,163,90,.18); }
+    .hero h1 { font-size: clamp(3rem, 6.6vw, 5.8rem); margin-bottom: 24px; }
+    .hero p { font-size: 1.15rem; color: var(--bean); max-width: 470px; margin-bottom: 34px; }
+    .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .art { position: relative; aspect-ratio: 4/5; }
+    .arch { position: absolute; inset: 0; border-radius: 999px 999px 24px 24px; background: linear-gradient(180deg, #e9c9a6, var(--terra)); overflow: hidden; }
+    .arch::before { content: ""; position: absolute; width: 70%; aspect-ratio: 1; border-radius: 50%; left: 15%; top: 10%; background: radial-gradient(circle, #ffe7c2, transparent 65%); animation: glow 5s ease-in-out infinite; }
+    @keyframes glow { 50% { transform: scale(1.1); opacity: .8; } }
+    .cup { position: absolute; left: 50%; bottom: 14%; width: 62%; transform: translateX(-50%); }
+    .steam path { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; opacity: .0; animation: steam 3.6s ease-in-out infinite; }
+    .steam path:nth-child(2) { animation-delay: 1.2s; } .steam path:nth-child(3) { animation-delay: 2.4s; }
+    @keyframes steam { 0% { opacity: 0; transform: translateY(14px); } 40% { opacity: .8; } 100% { opacity: 0; transform: translateY(-26px); } }
+    .badge { position: absolute; left: -24px; bottom: 18%; background: var(--paper); border-radius: 18px; padding: 14px 18px; box-shadow: 0 20px 40px -18px rgba(42,29,22,.45); display: grid; gap: 2px; animation: float 6s ease-in-out infinite; }
+    .badge strong { font: 600 1.4rem "Fraunces", serif; }
+    .badge span { font-size: .82rem; color: var(--bean); }
+    .badge.b2 { left: auto; right: -18px; top: 12%; bottom: auto; animation-delay: -3s; }
+    @keyframes float { 50% { transform: translateY(-10px); } }
+
+    /* strip */
+    .strip { background: var(--espresso); color: var(--cream); overflow: hidden; padding: 18px 0; }
+    .strip-track { display: flex; gap: 40px; width: max-content; animation: slide 30s linear infinite; font: 400 1.6rem "Fraunces", serif; font-style: italic; }
+    .strip-track span:nth-child(even) { color: var(--terra); font-style: normal; }
+    @keyframes slide { to { transform: translateX(-50%); } }
+
+    /* menu */
+    section { padding-block: 110px; }
+    .head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 44px; flex-wrap: wrap; }
+    .head h2 { font-size: clamp(2.4rem, 5vw, 4rem); }
+    .tabs { display: flex; gap: 6px; background: var(--paper); border: 1px solid var(--line); padding: 5px; border-radius: 999px; }
+    .tabs button { border: 0; background: none; font: 500 .95rem "DM Sans", sans-serif; padding: 9px 18px; border-radius: 999px; cursor: pointer; color: var(--bean); transition: .25s; }
+    .tabs button.on { background: var(--espresso); color: var(--cream); }
+    .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 64px; }
+    .item { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 22px 0; border-bottom: 1px dashed var(--line); animation: in .5s ease both; }
+    .item:nth-child(2) { animation-delay: .05s; } .item:nth-child(3) { animation-delay: .1s; } .item:nth-child(4) { animation-delay: .15s; } .item:nth-child(5) { animation-delay: .2s; } .item:nth-child(6) { animation-delay: .25s; }
+    @keyframes in { from { opacity: 0; transform: translateY(10px); } }
+    .item h3 { font-size: 1.35rem; }
+    .item .price { font: 600 1.2rem "Fraunces", serif; color: var(--terra); }
+    .item p { grid-column: 1 / -1; color: var(--bean); font-size: .95rem; }
+    .tag { display: inline-block; font: 700 .64rem "DM Sans", sans-serif; letter-spacing: .1em; text-transform: uppercase; background: var(--sage); color: #fff; padding: 2px 7px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+
+    /* story */
+    .story { background: var(--paper); }
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .shapes { position: relative; aspect-ratio: 1; }
+    .shapes span { position: absolute; border-radius: 50%; }
+    .s1 { inset: 0 30% 30% 0; background: var(--terra); }
+    .s2 { inset: 35% 0 0 35%; background: var(--sage); border-radius: 32px !important; }
+    .s3 { width: 26%; aspect-ratio: 1; left: 38%; top: 28%; background: var(--espresso); }
+    .story blockquote { font: 400 clamp(1.8rem, 3.4vw, 2.8rem)/1.15 "Fraunces", serif; letter-spacing: -0.02em; margin-bottom: 26px; }
+    .story p { color: var(--bean); margin-bottom: 14px; max-width: 480px; }
+    .sig { font: 400 1.4rem "Fraunces", serif; font-style: italic; color: var(--terra); margin-top: 18px; }
+
+    /* visit */
+    .visit { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 28px; padding: 36px; }
+    .card h3 { font-size: 2rem; margin-bottom: 20px; }
+    .hours li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); list-style: none; }
+    .hours li.today { font-weight: 700; color: var(--terra); }
+    .map { position: relative; min-height: 320px; overflow: hidden; background: #efe4d3; padding: 0; }
+    .map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .pin { position: absolute; left: 52%; top: 46%; transform: translate(-50%, -100%); background: var(--espresso); color: var(--cream); padding: 10px 14px; border-radius: 14px; font-weight: 500; font-size: .9rem; white-space: nowrap; }
+    .pin::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: var(--espresso); transform: translateX(-50%) rotate(45deg); }
+    .addr { position: absolute; left: 24px; bottom: 24px; background: var(--paper); border-radius: 16px; padding: 14px 18px; font-size: .92rem; }
+
+    /* newsletter + footer */
+    .news { background: var(--terra); color: var(--paper); border-radius: 32px; padding: clamp(36px, 6vw, 72px); display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+    .news h2 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); }
+    .news em { color: var(--espresso); }
+    .news form { display: flex; gap: 8px; background: var(--paper); padding: 6px; border-radius: 999px; }
+    .news input { flex: 1; border: 0; background: none; padding: 0 16px; font: 400 1rem "DM Sans", sans-serif; color: var(--espresso); min-width: 0; }
+    .news input:focus { outline: none; }
+    .news .thanks { font-weight: 500; }
+    footer { padding: 56px 0 40px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; color: var(--bean); font-size: .9rem; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (max-width: 860px) {
+      .hero, .story-grid, .visit, .news, .menu { grid-template-columns: 1fr; }
+      nav a.link { display: none; }
+      .art { max-width: 380px; margin: 0 auto; width: 100%; }
+      .badge { left: 0; } .badge.b2 { right: 0; }
+      section { padding-block: 80px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+  <div class="ribbon">Concept website designed by Edwin Dol — Lumen Café is a fictional business. <a href="../../work.html">← Back to portfolio</a></div>
+
+  <header class="wrap">
+    <nav>
+      <a href="#" class="logo">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7" fill="#c98b5a"/><g stroke="#2a1d16" stroke-width="2" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M6 26l3-3M23 9l3-3"/></g></svg>
+        lumen
+      </a>
+      <a href="#menu" class="link">Menu</a>
+      <a href="#story" class="link">Our story</a>
+      <a href="#visit" class="link">Visit</a>
+      <a href="#menu" class="btn">Order ahead</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <div>
+        <span class="open"><i></i> <span id="open-text">Open today · 7:00 – 17:00</span></span>
+        <h1>Slow coffee, warm bread &amp; <em>good mornings.</em></h1>
+        <p>A little corner café where the beans are roasted down the street, the sourdough is still warm, and nobody rushes you out.</p>
+        <div class="ctas"><a href="#menu" class="btn">See the menu →</a><a href="#visit" class="btn ghost">Find us</a></div>
+      </div>
+      <div class="art" aria-hidden="true">
+        <div class="arch">
+          <svg class="cup" viewBox="0 0 200 170">
+            <g class="steam"><path d="M80 40c-8-10 8-18 0-30"/><path d="M100 40c-8-10 8-18 0-30"/><path d="M120 40c-8-10 8-18 0-30"/></g>
+            <ellipse cx="100" cy="160" rx="90" ry="10" fill="#2a1d16" opacity=".18"/>
+            <path d="M40 60h120l-10 80a20 20 0 0 1-20 18H70a20 20 0 0 1-20-18z" fill="#fbf7f1"/>
+            <path d="M160 76c26 0 26 44 0 44" fill="none" stroke="#fbf7f1" stroke-width="12"/>
+            <ellipse cx="100" cy="62" rx="60" ry="9" fill="#5b4033"/>
+            <path d="M84 60c10-8 22-8 32 0-10 5-22 5-32 0z" fill="#e9c9a6"/>
+          </svg>
+        </div>
+        <div class="badge"><strong>4.9 ★</strong><span>Neighbourhood favourite</span></div>
+        <div class="badge b2"><strong>6:30am</strong><span>Bread out of the oven</span></div>
+      </div>
+    </div>
+
+    <div class="strip" aria-hidden="true"><div class="strip-track">
+      <span>Single-origin coffee</span><span>✺</span><span>Sourdough baked daily</span><span>✺</span><span>Oat milk on the house</span><span>✺</span><span>Dog friendly</span><span>✺</span>
+      <span>Single-origin coffee</span><span>✺</span><span>Sourdough baked daily</span><span>✺</span><span>Oat milk on the house</span><span>✺</span><span>Dog friendly</span><span>✺</span>
+    </div></div>
+
+    <section id="menu" class="wrap">
+      <div class="head reveal">
+        <h2>Today's <em>menu</em></h2>
+        <div class="tabs" role="tablist">
+          <button class="on" data-tab="coffee" role="tab" aria-selected="true">Coffee</button>
+          <button data-tab="bakery" role="tab" aria-selected="false">Bakery</button>
+          <button data-tab="brunch" role="tab" aria-selected="false">Brunch</button>
+        </div>
+      </div>
+      <div class="menu" id="menu-list"></div>
+    </section>
+
+    <section id="story" class="story">
+      <div class="wrap story-grid">
+        <div class="shapes reveal" aria-hidden="true"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+        <div class="reveal">
+          <blockquote>“We wanted a place that feels like the kitchen of a good friend.”</blockquote>
+          <p>Lumen started with one old espresso machine and a sourdough starter called Gerald. Today we roast with a local partner, bake everything in-house and still know most of our guests by name.</p>
+          <p>Come for the coffee, stay for the window seat.</p>
+          <p class="sig">— The Lumen team</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="visit" class="wrap">
+      <div class="head reveal"><h2>Come <em>say hi</em></h2></div>
+      <div class="visit">
+        <div class="card reveal">
+          <h3>Opening hours</h3>
+          <ul class="hours" id="hours"></ul>
+        </div>
+        <div class="card map reveal">
+          <svg viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="600" height="340" fill="#efe4d3"/>
+            <g stroke="#fbf7f1" stroke-width="18" fill="none"><path d="M-20 120h640M-20 250h640M150-20v380M420-20v380"/></g>
+            <g stroke="#fbf7f1" stroke-width="7" fill="none"><path d="M-20 60h640M-20 190h640M60-20v380M280-20v380M530-20v380"/></g>
+            <rect x="300" y="200" width="100" height="40" rx="8" fill="#9aa889" opacity=".6"/>
+            <circle cx="470" cy="70" r="40" fill="#9aa889" opacity=".5"/>
+          </svg>
+          <div class="pin">Lumen Café ☕</div>
+          <div class="addr"><strong>12 Market Lane</strong><br />Around the corner from the park</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div class="news reveal">
+        <div>
+          <h2>Fresh bakes, <em>first.</em></h2>
+          <p style="margin-top:12px;opacity:.9">One short email a week: new pastries, events and the occasional free coffee.</p>
+        </div>
+        <form id="news" novalidate>
+          <input type="email" placeholder="Your email" aria-label="Your email" required />
+          <button class="btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="wrap">
+    <span>© 2026 Lumen Café — concept by Edwin Dol</span>
+    <a href="../../index.html">Designed by Edwin Dol ↗</a>
+  </footer>
+
+  <script>
+    const MENU = {
+      coffee: [["Flat white", "Double ristretto, silky milk.", "3.80"], ["Filter of the week", "Ask us what's brewing — it changes every Monday.", "3.50", "New"], ["Oat cortado", "Equal parts espresso and oat milk.", "3.60"], ["Iced honey latte", "Local honey, cold milk, double shot.", "4.40"], ["Chai", "Our own spice blend, steamed slowly.", "3.90"], ["Hot chocolate", "70% dark chocolate. Marshmallow on request.", "3.70"]],
+      bakery: [["Sourdough loaf", "48-hour ferment, crackly crust.", "6.50"], ["Cardamom bun", "Swedish-style, warm from the oven.", "3.40", "Favourite"], ["Almond croissant", "Twice baked, frangipane inside.", "3.90"], ["Banana bread", "With brown butter and walnuts.", "3.20"], ["Lemon tart", "Buttery shell, sharp curd.", "4.20"], ["Seasonal galette", "Whatever fruit the market had today.", "4.60"]],
+      brunch: [["Lumen eggs", "Soft scrambled eggs on sourdough, chives, chili oil.", "9.50"], ["Avocado toast", "Smashed avocado, feta, pickled onion, seeds.", "10.20"], ["Granola bowl", "House granola, yoghurt, berries, honey.", "7.80", "Vegan option"], ["Croque Lumen", "Ham, gruyère, béchamel, mustard.", "11.00"], ["Pancake stack", "Ricotta pancakes, maple, crème fraîche.", "10.50"], ["Soup of the day", "With a thick slice of sourdough.", "7.20"]],
+    };
+    const list = document.getElementById("menu-list");
+    function show(tab) {
+      list.innerHTML = MENU[tab].map(([n, d, p, t]) => `<div class="item"><h3>${n}${t ? `<span class="tag">${t}</span>` : ""}</h3><span class="price">€${p}</span><p>${d}</p></div>`).join("");
+    }
+    document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+      document.querySelectorAll(".tabs button").forEach((x) => { x.classList.toggle("on", x === b); x.setAttribute("aria-selected", String(x === b)); });
+      show(b.dataset.tab);
+    }));
+    show("coffee");
+
+    // Opening hours with today highlighted
+    const HOURS = [["Monday", "7:00 – 17:00"], ["Tuesday", "7:00 – 17:00"], ["Wednesday", "7:00 – 17:00"], ["Thursday", "7:00 – 19:00"], ["Friday", "7:00 – 19:00"], ["Saturday", "8:00 – 17:00"], ["Sunday", "9:00 – 15:00"]];
+    const today = (new Date().getDay() + 6) % 7;
+    document.getElementById("hours").innerHTML = HOURS.map(([d, h], i) => `<li class="${i === today ? "today" : ""}"><span>${d}${i === today ? " · today" : ""}</span><span>${h}</span></li>`).join("");
+    document.getElementById("open-text").textContent = `Open today · ${HOURS[today][1]}`;
+
+    document.getElementById("news").addEventListener("submit", (e) => {
+      e.preventDefault();
+      e.target.innerHTML = '<span class="thanks" style="padding:12px 16px">Thanks! (This is a concept site — no email was sent.)</span>';
+    });
+
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))), { threshold: .15 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

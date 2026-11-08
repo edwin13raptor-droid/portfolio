@@ -7,7 +7,14 @@
   // "*word*" → <em>word</em>, newlines → <br>
   const rich = (s) => esc(s).replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/\n/g, "<br />");
   const get = (obj, path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
-  const safeUrl = (u) => (/^(https?:|mailto:|\/)/i.test(String(u || "").trim()) ? String(u).trim() : "");
+  // Allow web links, mailto: and paths inside this site (e.g. demos/lumen-cafe/index.html)
+  const safeUrl = (u) => {
+    const s = String(u || "").trim();
+    if (/^(https?:|mailto:)/i.test(s)) return s;
+    if (/^(\/|\.{0,2}\/?)[a-z0-9][a-z0-9._\-\/]*(#[a-z0-9_\-]*)?$/i.test(s) && !/^[a-z]+:/i.test(s)) return s;
+    return "";
+  };
+  const isLocal = (u) => !!u && !/^(https?:|mailto:)/i.test(u);
   const pad = (n) => String(n).padStart(2, "0");
   const page = document.body.dataset.page || "";
 
@@ -80,18 +87,24 @@
        2–6 pages     → homePage + extraPage × (n − 1)  ($100 + $150 each)
        7+ pages      → capped at largePrice            ($1,000 flat)
      Inner pages (templated: blog posts, products, portfolio items):
-       innerPage × m, never capped                     ($25 each)
+       1–30 pages    → innerPage × m                   ($25 each)
+       31+ pages     → capped at innerCap              ($750 flat)
      Total = main pages cost + inner pages cost
      Everything is calculated from converted unit prices, so each breakdown line adds up exactly. */
   function quote(mainPages, innerPages, p) {
     const main = Math.max(1, Math.floor(mainPages) || 1);
     const inner = Math.max(0, Math.floor(innerPages) || 0);
-    const unit = { home: conv(p.homePage), page: conv(p.extraPage), cap: conv(p.largePrice), inner: conv(p.innerPage) };
+    const unit = {
+      home: conv(p.homePage), page: conv(p.extraPage), cap: conv(p.largePrice),
+      inner: conv(p.innerPage), innerCap: conv(p.innerCap),
+    };
     const uncapped = unit.home + (main - 1) * unit.page;
     const capped = main > p.largeAfter;
     const mainCost = capped ? unit.cap : uncapped;
-    const innerCost = inner * unit.inner;
-    return { main, inner, unit, capped, uncapped, mainCost, innerCost, total: mainCost + innerCost };
+    const innerUncapped = inner * unit.inner;
+    const innerCapped = p.innerCapAfter > 0 && inner > p.innerCapAfter;
+    const innerCost = innerCapped ? unit.innerCap : innerUncapped;
+    return { main, inner, unit, capped, uncapped, mainCost, innerCapped, innerUncapped, innerCost, total: mainCost + innerCost };
   }
 
   // Replace {home} {page} {large} {inner} {largeAfter} {largeAfterPlus} in package texts
@@ -100,6 +113,8 @@
       .replace(/\{home\}/g, money(p.homePage))
       .replace(/\{page\}/g, money(p.extraPage))
       .replace(/\{large\}/g, money(p.largePrice))
+      .replace(/\{innerCapAfter\}/g, String(p.innerCapAfter))
+      .replace(/\{innerCap\}/g, money(p.innerCap))
       .replace(/\{inner\}/g, money(p.innerPage))
       .replace(/\{largeAfterPlus\}/g, String(p.largeAfter + 1))
       .replace(/\{largeAfter\}/g, String(p.largeAfter));
@@ -113,6 +128,8 @@
       largeAfter: Number(p.largeAfter) || 6,
       largePrice: Number(p.largePrice) || 0,
       innerPage: Number(p.innerPage) || 0,
+      innerCapAfter: Number(p.innerCapAfter) || 0, // 0 = no cap
+      innerCap: Number(p.innerCap) || 0,
     };
   }
 
@@ -185,9 +202,13 @@
       const hint = calc.querySelector(".calc-hint");
       calc.querySelectorAll("[data-unit]").forEach((el) => {
         const k = el.dataset.unit;
-        el.textContent = k === "inner" ? fmt(conv(p.innerPage)) : k === "cap" ? fmt(conv(p.largePrice)) : String(p.largeAfter + 1);
+        el.textContent = {
+          inner: fmt(conv(p.innerPage)), cap: fmt(conv(p.largePrice)), after: String(p.largeAfter + 1),
+          innerCap: fmt(conv(p.innerCap)), innerAfter: String(p.innerCapAfter + 1),
+        }[k] ?? "";
       });
       mainR.max = String(Math.max(12, p.largeAfter + 6));
+      if (p.innerCapAfter) innerR.max = String(p.innerCapAfter + 10);
 
       const fillBar = (r) => r.style.setProperty("--fill", `${((r.value - r.min) / (r.max - r.min)) * 100}%`);
       const row = (label, detail, amount, cls = "") =>
@@ -208,23 +229,29 @@
           : q.main === 1
             ? `Homepage — ${fmt(q.unit.home)}`
             : `Homepage ${fmt(q.unit.home)} + ${q.main - 1} × ${fmt(q.unit.page)}`;
-        const innerDetail = q.inner
-          ? `${q.inner} × ${fmt(q.unit.inner)} — never capped`
-          : `${fmt(q.unit.inner)} each — blog posts, products, portfolio items`;
+        const innerDetail = q.innerCapped
+          ? `${p.innerCapAfter + 1}+ inner pages are capped at ${fmt(q.unit.innerCap)} flat`
+          : q.inner
+            ? `${q.inner} × ${fmt(q.unit.inner)}`
+            : `${fmt(q.unit.inner)} each — blog posts, products, portfolio items`;
         lines.innerHTML =
           row(`Main pages <b>× ${q.main}</b>`, mainDetail, fmt(q.mainCost)) +
           row(`Inner pages <b>× ${q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
           row("Total", "Main pages + inner pages", fmt(q.total), "b-total");
 
-        hint.textContent = q.capped && q.uncapped > q.mainCost
-          ? `The cap saves you ${fmt(q.uncapped - q.mainCost)} on main pages.`
-          : q.capped
-            ? `You've reached the cap — more main pages won't cost extra.`
+        // One friendly line explaining the caps (savings first, then what's next)
+        const saved = (q.capped ? q.uncapped - q.mainCost : 0) + (q.innerCapped ? q.innerUncapped - q.innerCost : 0);
+        hint.textContent = saved > 0
+          ? `The price caps save you ${fmt(saved)}.`
+          : q.capped || q.innerCapped
+            ? `You've reached a cap — more of those pages won't cost extra.`
             : q.main === p.largeAfter
               ? `From ${p.largeAfter + 1} main pages, the price is capped at ${fmt(q.unit.cap)}.`
-              : `Main pages are capped at ${fmt(q.unit.cap)} from ${p.largeAfter + 1} pages. Inner pages are ${fmt(q.unit.inner)} each with no cap.`;
+              : p.innerCapAfter && q.inner === p.innerCapAfter
+                ? `From ${p.innerCapAfter + 1} inner pages, they're capped at ${fmt(q.unit.innerCap)}.`
+                : `Main pages cap at ${fmt(q.unit.cap)} (${p.largeAfter + 1}+ pages). Inner pages cap at ${fmt(q.unit.innerCap)} (${p.innerCapAfter + 1}+ pages).`;
 
-        calc.classList.toggle("is-capped", q.capped);
+        calc.classList.toggle("is-capped", q.capped || q.innerCapped);
         fillBar(mainR); fillBar(innerR);
         out.classList.remove("bump"); void out.offsetWidth; out.classList.add("bump");
       };
@@ -323,10 +350,14 @@
 
   // Browser-window mockup used as the project cover (shows the uploaded image if there is one)
   function mock(p, i) {
-    const host = (p.url && safeUrl(p.url)) ? safeUrl(p.url).replace(/^https?:\/\//, "").replace(/\/.*$/, "")
-      : `${String(p.title || "site").toLowerCase().replace(/[^a-z0-9]+/g, "")}.com`;
+    const url = safeUrl(p.url);
+    const host = url && !isLocal(url) ? url.replace(/^https?:\/\//, "").replace(/\/.*$/, "")
+      : `${String(p.title || "site").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "")}.com`;
+    // A concept site that lives in this project → show it live, scaled down, as the cover
     const screen = p.image
       ? `<img src="${esc(p.image)}" alt="${esc(p.title)} website" loading="lazy" />`
+      : url && isLocal(url)
+      ? `<div class="mock-live"><iframe src="${esc(url)}" title="${esc(p.title)} preview" tabindex="-1" aria-hidden="true" scrolling="no"></iframe></div>`
       : `<div class="mock-ui v${i % 3}">
           <div class="mock-nav"><b>${esc(p.title)}</b><s></s><s></s><s></s></div>
           <div class="mock-hero"><div class="mock-h">${esc(p.title)}</div><div class="mock-lines"><s></s><s></s></div><div class="mock-btn"></div></div>
@@ -341,10 +372,12 @@
 
   function projectCard(p, i, big = false) {
     const url = safeUrl(p.url);
-    const tag = url ? `a href="${esc(url)}" target="_blank" rel="noopener"` : "article";
+    const local = isLocal(url);
+    const tag = !url ? "article" : local ? `a href="${esc(url)}" data-open="1"` : `a href="${esc(url)}" target="_blank" rel="noopener"`;
     const end = url ? "a" : "article";
+    const cta = !url ? "" : local ? '<span class="thumb-cta">Open homepage →</span>' : '<span class="thumb-cta">Visit site ↗</span>';
     return `<${tag} class="project${big ? " project-big" : ""} reveal" data-cat="${esc(p.category || "")}">
-      <div class="thumb" style="--c:${esc(p.color || "#888")}">${mock(p, i)}${url ? '<span class="thumb-cta">Visit site ↗</span>' : ""}</div>
+      <div class="thumb" style="--c:${esc(p.color || "#888")}">${mock(p, i)}${cta}</div>
       <div class="project-info">
         <div class="project-top"><h3>${esc(p.title)}</h3><span class="project-year">${esc(p.year || "")}</span></div>
         <p>${esc(p.subtitle)}</p>
@@ -383,7 +416,8 @@
     const set = [...words, ...words];
     list("marquee", [...set, ...set], (wd, i) =>
       `<span class="${i % 2 ? "w-fill" : "w-out"}">${esc(wd)}</span><span class="star">✦</span>`);
-    list("featured", projects.slice(0, 3), (p, i) => projectCard(p, i, i === 0));
+    const featured = projects.slice(0, 3);
+    list("featured", featured, (p, i) => projectCard(p, i, i === 0 || featured.length <= 2));
     list("services-teaser", c.services?.items, (s, i) => `
       <a href="services.html" class="teaser reveal"><span class="num">${pad(i + 1)}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p><span class="teaser-arrow">→</span></a>`);
     list("testimonials", c.home?.testimonials, (t) => `

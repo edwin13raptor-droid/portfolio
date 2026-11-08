@@ -128,6 +128,16 @@
     });
   }
 
+  // ---------- Live concept-site covers: scale the 1440px-wide page to fit ----------
+  const ro = new ResizeObserver((entries) => entries.forEach((e) => e.target.style.setProperty("--s", (e.contentRect.width / 1440).toFixed(4))));
+  const watchLive = () => document.querySelectorAll(".mock-live:not([data-ro])").forEach((el) => {
+    el.dataset.ro = "1";
+    if (el.clientWidth) el.style.setProperty("--s", (el.clientWidth / 1440).toFixed(4)); // right away…
+    ro.observe(el); // …and again whenever the card changes size
+  });
+  document.addEventListener("site:rendered", watchLive);
+  watchLive();
+
   if (!fine || reduce) return;
 
   // ---------- 4. Spotlight + 3D tilt ----------

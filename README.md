@@ -69,8 +69,12 @@ Set in the admin panel → **Services**. Amounts are in your own currency (defau
 | 2 – 6 | $100 for the homepage + $150 for each additional page |
 | 7+ | capped at $1,000 flat |
 
-**Inner pages** — templated pages like blog posts, products, portfolio items: **$25 each, never capped**.
+**Inner pages** — templated pages like blog posts, products, portfolio items:
+| Inner pages | Price |
+|---|---|
+| 1 – 30 | $25 each |
+| 31+ | capped at $750 flat |
 
-**Total = main pages cost (max $1,000) + inner pages cost.**
+**Total = main pages cost (max $1,000) + inner pages cost (max $750).**
 
 The calculator on the Services page has a slider for each, and a line-by-line breakdown. Visitors see prices converted to their own currency (detected from their region on Vercel, or their browser language), with a currency picker to switch. Converted unit prices are rounded first, so the breakdown always adds up exactly.
