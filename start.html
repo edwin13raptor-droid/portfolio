@@ -12,18 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Geist:wght@300..600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header class="nav">
-    <a href="index.html" class="logo">Edwin Dol</a>
-    <nav>
-      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
-      <ul class="nav-links">
-        <li><a href="index.html#work">Work</a></li>
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+<body class="is-loading" data-page="start" data-title="Start a project">
+  <header id="site-header"></header>
 
   <main class="intake">
     <div class="intake-head">
@@ -278,11 +268,11 @@
         <div class="field">
           <span class="label">Budget <span class="req">*</span></span>
           <div class="choices" data-required-group="budget">
-            <label class="choice"><input type="radio" name="budget" value="Under €500" /><span>Under €500</span></label>
-            <label class="choice"><input type="radio" name="budget" value="€500 – €1,000" /><span>€500 – €1,000</span></label>
-            <label class="choice"><input type="radio" name="budget" value="€1,000 – €2,500" /><span>€1,000 – €2,500</span></label>
-            <label class="choice"><input type="radio" name="budget" value="€2,500 – €5,000" /><span>€2,500 – €5,000</span></label>
-            <label class="choice"><input type="radio" name="budget" value="€5,000+" /><span>€5,000+</span></label>
+            <!-- Amounts are in your base currency (ZAR); site.js shows them in the visitor's currency -->
+            <label class="choice"><input type="radio" name="budget" data-budget="0-2500" value="Under R2,500" /><span>Under R2,500</span></label>
+            <label class="choice"><input type="radio" name="budget" data-budget="2500-5000" value="R2,500 – R5,000" /><span>R2,500 – R5,000</span></label>
+            <label class="choice"><input type="radio" name="budget" data-budget="5000-10000" value="R5,000 – R10,000" /><span>R5,000 – R10,000</span></label>
+            <label class="choice"><input type="radio" name="budget" data-budget="10000-" value="R10,000+" /><span>R10,000+</span></label>
             <label class="choice"><input type="radio" name="budget" value="Not sure yet" /><span>Not sure yet</span></label>
           </div>
           <span class="error-msg">Please choose a range — it helps me suggest the right solution.</span>
@@ -341,11 +331,10 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <p>© <span class="year"></span> Edwin Dol. Designed &amp; built by me.</p>
-    <a href="index.html">Home</a>
-  </footer>
+  <footer id="site-footer"></footer>
 
   <script src="script.js"></script>
+  <script src="site.js"></script>
+  <script src="motion.js"></script>
 </body>
 </html>

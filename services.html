@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Services — Edwin Dol</title>
+  <meta name="description" content="Website design, development, landing pages and care plans by Edwin Dol." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&family=Geist:wght@300..600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="is-loading" data-page="services" data-title="Services">
+  <header id="site-header"></header>
+
+  <main id="top">
+    <section class="page-hero">
+      <p class="eyebrow" data-text="services.eyebrow"></p>
+      <h1 data-rich="services.heading"></h1>
+      <p class="lead" data-text="services.intro"></p>
+    </section>
+
+    <section class="section section-tight">
+      <div class="service-rows" id="services-list"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2 data-rich="services.packagesHeading"></h2>
+          <p class="section-sub" data-text="services.packagesText"></p>
+        </div>
+        <label class="currency">
+          <span>Currency</span>
+          <select id="currency-picker" aria-label="Show prices in"></select>
+        </label>
+      </div>
+
+      <div class="calc reveal" id="price-calc">
+        <div class="calc-top">
+          <p class="eyebrow">Price calculator</p>
+          <p class="calc-pages">1 page</p>
+        </div>
+        <p class="calc-price">—</p>
+        <input type="range" min="1" max="12" value="1" step="1" aria-label="Number of pages" />
+        <div class="calc-bottom">
+          <p class="calc-breakdown"></p>
+          <a href="start.html" class="btn btn-small">Get an exact quote <span class="arrow">→</span></a>
+        </div>
+      </div>
+
+      <div class="packages" id="packages"></div>
+      <p class="currency-note" id="currency-note"></p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2 data-rich="services.processHeading"></h2></div>
+      <ol class="process" id="process-list"></ol>
+    </section>
+
+    <section class="section faq-section">
+      <div class="faq-side">
+        <h2 data-rich="services.faqHeading"></h2>
+        <p class="section-sub">Something else? <a href="contact.html" class="link">Ask me directly</a>.</p>
+      </div>
+      <div class="faq" id="faq"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="script.js"></script>
+  <script src="site.js"></script>
+  <script src="motion.js"></script>
+</body>
+</html>

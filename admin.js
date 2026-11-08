@@ -40,9 +40,11 @@
   const TABS = [
     { id: "general", label: "General", fields: [
       { key: "site.name", label: "Your name / logo", type: "text" },
-      { key: "site.title", label: "Browser tab title", type: "text" },
+      { key: "site.role", label: "Your role", type: "text" },
+      { key: "site.title", label: "Homepage browser-tab title", type: "text" },
       { key: "site.description", label: "Google description", type: "textarea", hint: "Shown in search results. ~150 characters." },
       { key: "site.email", label: "Contact email", type: "text" },
+      { key: "site.location", label: "Location", type: "text" },
       { key: "site.available", label: "Show “available” badge", type: "toggle" },
       { key: "site.availableText", label: "Badge text", type: "text" },
       { key: "site.accent", label: "Accent colour", type: "color" },
@@ -50,53 +52,88 @@
         fields: [{ key: "label", label: "Name", type: "text" }, { key: "url", label: "URL", type: "text", hint: "Leave empty to hide." }],
         blank: () => ({ label: "", url: "" }) },
     ]},
-    { id: "hero", label: "Hero", fields: [
-      { key: "hero.heading", label: "Big heading", type: "textarea", rows: 2, hint: RICH_HINT },
-      { key: "hero.lead", label: "Intro text", type: "textarea" },
-      { key: "hero.ctaPrimary", label: "Main button", type: "text" },
-      { key: "hero.ctaSecondary", label: "Second button", type: "text" },
-      { key: "stats", label: "Stats", type: "list", itemLabel: (i) => `${i.value} ${i.label}`,
+    { id: "home", label: "Home", page: "index.html", fields: [
+      { key: "home.heading", label: "Big heading", type: "textarea", rows: 2, hint: RICH_HINT },
+      { key: "home.lead", label: "Intro text", type: "textarea" },
+      { key: "home.ctaPrimary", label: "Main button", type: "text" },
+      { key: "home.ctaSecondary", label: "Second button", type: "text" },
+      { key: "home.clients", label: "Client names (scrolling strip)", type: "tags" },
+      { key: "home.introHeading", label: "Statement", type: "textarea", rows: 3, hint: RICH_HINT },
+      { key: "home.introText", label: "Statement text", type: "textarea" },
+      { key: "home.stats", label: "Stats", type: "list", itemLabel: (i) => `${i.value} ${i.label}`,
         fields: [{ key: "value", label: "Number", type: "text" }, { key: "label", label: "Label", type: "text" }],
         blank: () => ({ value: "0", label: "New stat" }) },
+      { key: "home.featuredHeading", label: "Featured work heading", type: "text", hint: "Shows your first 3 projects. " + RICH_HINT },
+      { key: "home.featuredText", label: "Featured work text", type: "textarea", rows: 2 },
+      { key: "home.testimonialsHeading", label: "Testimonials heading", type: "text" },
+      { key: "home.testimonials", label: "Testimonials", type: "list", itemLabel: (i) => i.name || "Testimonial",
+        fields: [{ key: "quote", label: "Quote", type: "textarea" }, { key: "name", label: "Name", type: "text" }, { key: "role", label: "Role / company", type: "text" }],
+        blank: () => ({ quote: "", name: "New client", role: "" }) },
     ]},
-    { id: "work", label: "Work", fields: [
-      { key: "work.eyebrow", label: "Small label", type: "text" },
+    { id: "work", label: "Work", page: "work.html", fields: [
       { key: "work.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
+      { key: "work.intro", label: "Intro text", type: "textarea" },
       { key: "work.projects", label: "Projects", type: "list", itemLabel: (i) => i.title || "Untitled project",
         fields: [
-          { key: "image", label: "Cover image", type: "image" },
+          { key: "image", label: "Website screenshot", type: "image", hint: "Shown inside the browser frame. Without one, a mock-up is drawn in the project colour." },
           { key: "title", label: "Title", type: "text" },
           { key: "subtitle", label: "Short description", type: "text" },
+          { key: "category", label: "Category (for filters)", type: "text" },
+          { key: "year", label: "Year", type: "text" },
+          { key: "color", label: "Project colour", type: "color" },
           { key: "tags", label: "Tags", type: "tags" },
-          { key: "url", label: "Link (optional)", type: "text", hint: "e.g. https://client-site.com" },
+          { key: "url", label: "Live link (optional)", type: "text", hint: "e.g. https://client-site.com" },
         ],
-        blank: () => ({ id: uid(), title: "New project", subtitle: "", tags: [], image: "", url: "" }) },
+        blank: () => ({ id: uid(), title: "New project", subtitle: "", category: "", year: String(new Date().getFullYear()), color: "#8a8a8a", tags: [], image: "", url: "" }) },
     ]},
-    { id: "services", label: "Services", fields: [
-      { key: "services.eyebrow", label: "Small label", type: "text" },
+    { id: "services", label: "Services", page: "services.html", fields: [
       { key: "services.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
+      { key: "services.intro", label: "Intro text", type: "textarea" },
       { key: "services.items", label: "Services", type: "list", itemLabel: (i) => i.title || "Service",
-        fields: [{ key: "title", label: "Title", type: "text" }, { key: "text", label: "Description", type: "textarea" }],
-        blank: () => ({ id: uid(), title: "New service", text: "" }) },
-    ]},
-    { id: "process", label: "Process", fields: [
-      { key: "process.eyebrow", label: "Small label", type: "text" },
-      { key: "process.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
-      { key: "process.steps", label: "Steps", type: "list", itemLabel: (i) => i.title || "Step",
+        fields: [{ key: "title", label: "Title", type: "text" }, { key: "text", label: "Description", type: "textarea" }, { key: "points", label: "Bullet points", type: "tags" }],
+        blank: () => ({ id: uid(), title: "New service", text: "", points: [] }) },
+      { key: "services.packagesHeading", label: "Packages heading", type: "text" },
+      { key: "services.packagesText", label: "Packages text", type: "textarea", rows: 2 },
+      { key: "services.pricing.currency", label: "Your currency (3 letters)", type: "text", hint: "All amounts below are in this currency, e.g. ZAR. Visitors see them converted to their own currency." },
+      { key: "services.pricing.homePage", label: "Homepage price", type: "text" },
+      { key: "services.pricing.extraPage", label: "Price per extra page", type: "text" },
+      { key: "services.pricing.largeAfter", label: "“Large site” starts after how many pages", type: "text" },
+      { key: "services.pricing.largePrice", label: "Large site price (from)", type: "text" },
+      { key: "services.packages", label: "Packages", type: "list", itemLabel: (i) => `${i.name} — ${i.amount}`,
+        hint: "In texts you can use {home}, {page}, {large}, {largeAfter} — they turn into the right prices.",
+        fields: [{ key: "name", label: "Name", type: "text" }, { key: "amount", label: "Price (number, your currency)", type: "text" },
+          { key: "from", label: "Show “from” before the price", type: "toggle" }, { key: "pagesLabel", label: "Pages label", type: "text" },
+          { key: "text", label: "Short text", type: "textarea", rows: 2, hint: "Use {home}, {page}, {large}, {largeAfter} for prices." },
+          { key: "features", label: "Features", type: "tags" }, { key: "featured", label: "Highlight as “Most popular”", type: "toggle" }],
+        blank: () => ({ id: uid(), name: "New package", amount: 0, from: true, pagesLabel: "", text: "", features: [], featured: false }) },
+      { key: "services.processHeading", label: "Process heading", type: "text", hint: RICH_HINT },
+      { key: "services.steps", label: "Process steps", type: "list", itemLabel: (i) => i.title || "Step",
         fields: [{ key: "title", label: "Title", type: "text" }, { key: "text", label: "Description", type: "textarea" }],
         blank: () => ({ id: uid(), title: "New step", text: "" }) },
+      { key: "services.faq", label: "FAQ", type: "list", itemLabel: (i) => i.q || "Question",
+        fields: [{ key: "q", label: "Question", type: "text" }, { key: "a", label: "Answer", type: "textarea" }],
+        blank: () => ({ id: uid(), q: "New question?", a: "" }) },
     ]},
-    { id: "about", label: "About", fields: [
+    { id: "about", label: "About", page: "about.html", fields: [
       { key: "about.photo", label: "Your photo", type: "image" },
-      { key: "about.eyebrow", label: "Small label", type: "text" },
       { key: "about.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
+      { key: "about.intro", label: "Big intro sentence", type: "textarea", rows: 3 },
       { key: "about.body", label: "About text", type: "textarea", rows: 8, hint: "Empty line = new paragraph." },
-      { key: "about.skills", label: "Skills", type: "tags" },
+      { key: "about.valuesHeading", label: "Values heading", type: "text", hint: RICH_HINT },
+      { key: "about.values", label: "Values", type: "list", itemLabel: (i) => i.title || "Value",
+        fields: [{ key: "title", label: "Title", type: "text" }, { key: "text", label: "Text", type: "textarea" }],
+        blank: () => ({ id: uid(), title: "New value", text: "" }) },
+      { key: "about.experience", label: "Experience", type: "list", itemLabel: (i) => `${i.year} · ${i.title}`,
+        fields: [{ key: "year", label: "Years", type: "text" }, { key: "title", label: "Title", type: "text" }, { key: "text", label: "Text", type: "textarea", rows: 2 }],
+        blank: () => ({ id: uid(), year: String(new Date().getFullYear()), title: "New role", text: "" }) },
+      { key: "about.skills", label: "Tools / skills", type: "tags" },
     ]},
-    { id: "contact", label: "Contact", fields: [
-      { key: "contact.eyebrow", label: "Small label", type: "text" },
+    { id: "contact", label: "Contact", page: "contact.html", fields: [
       { key: "contact.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
-      { key: "contact.text", label: "Text", type: "textarea" },
+      { key: "contact.text", label: "Intro text", type: "textarea" },
+      { key: "contact.briefHeading", label: "Project-brief card heading", type: "text" },
+      { key: "contact.briefText", label: "Project-brief card text", type: "textarea", rows: 2 },
+      { key: "contact.response", label: "Response time text", type: "text" },
     ]},
   ];
 
@@ -104,8 +141,13 @@
   let draft = null;
   let saved = null;
   let dirty = false;
-  let tab = "general";
+  // Start on the tab for the page you're looking at
+  const PAGE_TAB = { home: "home", work: "work", services: "services", about: "about", contact: "contact" };
+  let tab = PAGE_TAB[document.body.dataset.page] || "general";
   const openItems = new Set();
+  const store = {
+    set: (v) => { try { v ? sessionStorage.setItem("admOpen", "1") : sessionStorage.removeItem("admOpen"); } catch {} },
+  };
 
   // ---------- DOM ----------
   const root = h("aside", { class: "adm", "aria-label": "Admin panel", hidden: true });
@@ -177,7 +219,15 @@
     const tabs = h("nav", { class: "adm-tabs" }, TABS.map((t) =>
       h("button", { class: `adm-tab${t.id === tab ? " active" : ""}`, onclick: () => { tab = t.id; viewEditor(); } }, t.label)));
     const current = TABS.find((t) => t.id === tab);
-    const body = h("div", { class: "adm-body" }, current.fields.map((f) => field(f, f.key)));
+    const here = location.pathname.split("/").pop().replace(/\.html$/, "") || "index";
+    const target = current.page?.replace(/\.html$/, "");
+    const note = target && target !== here
+      ? h("div", { class: "adm-note" }, "These fields are on another page. ",
+          h("a", { href: current.page, onclick: (e) => {
+            if (dirty) { e.preventDefault(); toast("Save your changes first", "err"); }
+          } }, `Open ${current.label} page →`))
+      : null;
+    const body = h("div", { class: "adm-body" }, note, current.fields.map((f) => field(f, f.key)));
     const foot = h("footer", { class: "adm-foot" },
       h("button", { class: "adm-btn ghost", title: "Download a backup of all content", onclick: downloadJson }, "Backup"),
       h("button", { class: "adm-btn ghost", onclick: discard }, "Discard"),
@@ -393,6 +443,7 @@
   // ---------- open / close ----------
   async function open() {
     root.hidden = false;
+    store.set(true);
     document.body.classList.add("adm-open");
     requestAnimationFrame(() => root.classList.add("show"));
     if (draft) return viewEditor();
@@ -408,6 +459,7 @@
   function close() {
     if (dirty && !confirm("You have unsaved changes. Close and discard them?")) return;
     if (dirty) { draft = clone(saved); setDirty(false); preview(); }
+    store.set(false);
     root.classList.remove("show");
     document.body.classList.remove("adm-open");
     setTimeout(() => (root.hidden = true), 300);

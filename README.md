@@ -4,7 +4,9 @@ Dark, minimalist portfolio with a **built-in admin panel** and a **client projec
 
 | File | What it is |
 |---|---|
-| `index.html` + `site.js` | Portfolio homepage. All text/images come from your saved content (or `content.json` as the default). |
+| `index.html`, `work.html`, `services.html`, `about.html`, `contact.html` | The site pages. Header, footer and all text/images are filled in by `site.js` from your saved content (or `content.json` as the default). |
+| `motion.js` | Animations: word-by-word headings, custom cursor, magnetic buttons, parallax, count-ups, scroll progress. Turned off automatically for people who prefer reduced motion. |
+| `api/rates.js` | Detects the visitor's country and returns live exchange rates, so prices show in their currency. |
 | `start.html` | Client project brief — send this link to customers (`yoursite.com/start`). |
 | `admin.js` / `admin.css` | Admin panel. Only loads when you open it. |
 | `content.json` | Default content (used until you save something in the admin panel). |
@@ -22,7 +24,7 @@ No build step — plain HTML/CSS/JS + Vercel functions.
 On the live site press **Ctrl + Shift + A** (Mac: **Cmd + Shift + A**) — or go to `yoursite.com/#admin`.
 
 - Log in with your `ADMIN_PASSWORD`.
-- Tabs: **General** (name, colours, socials), **Hero**, **Work** (projects + images), **Services**, **Process**, **About** (photo), **Contact**.
+- Tabs: **General**, **Home**, **Work**, **Services** (pricing, packages, FAQ), **About**, **Contact**. The panel opens on the tab for the page you're on and stays open while you move between pages.
 - Changes preview **live** on the page behind the panel. Click **Save changes** (or Ctrl+S) to publish.
 - In headings, wrap words in `*stars*` to make them grey, e.g. `with *intention.*`
 - **Backup** downloads all your content as `content.json`.
@@ -51,4 +53,18 @@ The repo is on GitHub: `edwin13raptor-droid/portfolio`. Every `git push` redeplo
 ## Client workflow
 1. Send customers `https://<your-site>/start`.
 2. Their answers arrive in your inbox, with a **copy-paste brief** at the bottom.
-3. Paste that brief into Claude to start a new session for that client's site (e.g. `D:\Claude\clients\<client-name>`).
+3. Paste that brief into Claude to start a new session for that client's site in its own folder, e.g. `D:\Claude\websites\<client-name>`.
+
+---
+
+## Pricing
+
+Set in the admin panel → **Services** (amounts in your own currency, default **ZAR**):
+
+| Rule | Default |
+|---|---|
+| Homepage | R1,000 |
+| Each extra page | R1,500 |
+| More than 6 pages | from R10,000 |
+
+Visitors see prices converted to their own currency (detected from their region on Vercel, or their browser language), rounded to friendly numbers. They can switch currency with the picker on the Services page. There's also a page-count price calculator.

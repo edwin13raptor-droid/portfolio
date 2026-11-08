@@ -1,9 +1,11 @@
 {
   "site": {
     "name": "Edwin Dol",
+    "role": "Website Designer",
     "title": "Edwin Dol — Website Designer",
     "description": "Edwin Dol is an independent website designer creating considered, high-end websites for brands that care about detail.",
     "email": "edwin13.raptor@gmail.com",
+    "location": "Netherlands — working worldwide",
     "available": true,
     "availableText": "Available for new projects",
     "accent": "#d4ff5a",
@@ -13,57 +15,110 @@
       { "label": "Dribbble", "url": "" }
     ]
   },
-  "hero": {
+  "home": {
     "heading": "Websites, designed\nwith *intention.*",
     "lead": "I'm Edwin Dol, an independent website designer. I create quiet, considered websites for brands that value clarity, craft and detail.",
     "ctaPrimary": "Start your project",
-    "ctaSecondary": "Selected work"
+    "ctaSecondary": "View work",
+    "stats": [
+      { "value": "40+", "label": "Websites launched" },
+      { "value": "5", "label": "Years designing" },
+      { "value": "98%", "label": "Happy clients" },
+      { "value": "24h", "label": "Reply time" }
+    ],
+    "clients": ["Lumen Café", "Northwind Studio", "FitPulse", "Velvet Salon", "Atlas Legal", "Kōji Ramen", "Nordic Living", "Bloom & Co"],
+    "featuredHeading": "Selected *work*",
+    "featuredText": "A few recent projects — each one designed from scratch around the brand, the audience and the goal.",
+    "introHeading": "I design websites that feel *effortless* — and work hard for your business.",
+    "introText": "Every site I make starts with understanding what you need it to do. Then I design something that looks premium, loads fast and turns visitors into customers.",
+    "testimonialsHeading": "Kind *words*",
+    "testimonials": [
+      { "quote": "Edwin completely transformed how our café looks online. Orders through the website doubled within two months.", "name": "Sanne de Vries", "role": "Owner, Lumen Café" },
+      { "quote": "Calm, quick and incredibly detail-oriented. He understood our brand better than we did.", "name": "Mark Jansen", "role": "Founder, Northwind Studio" },
+      { "quote": "The launch page looked so good people asked who designed it. Worth every euro.", "name": "Lisa Bakker", "role": "Marketing, FitPulse" }
+    ]
   },
-  "stats": [
-    { "value": "40", "label": "Websites launched" },
-    { "value": "5", "label": "Years designing" },
-    { "value": "24h", "label": "Reply time" }
-  ],
   "work": {
-    "eyebrow": "Selected work",
-    "heading": "Recent projects",
+    "eyebrow": "Work",
+    "heading": "Selected *projects*",
+    "intro": "Websites for cafés, studios, salons and startups. Every one custom-designed, fast and built to grow the business behind it.",
     "projects": [
-      { "id": "p1", "title": "Lumen Café", "subtitle": "Website redesign & online ordering", "tags": ["Web Design", "E-commerce"], "image": "", "url": "" },
-      { "id": "p2", "title": "Northwind Studio", "subtitle": "Portfolio site for an architecture firm", "tags": ["UI / UX", "Portfolio"], "image": "", "url": "" },
-      { "id": "p3", "title": "FitPulse", "subtitle": "Landing page for a fitness app launch", "tags": ["Landing Page", "Branding"], "image": "", "url": "" },
-      { "id": "p4", "title": "Velvet Salon", "subtitle": "Booking-focused website for a beauty salon", "tags": ["Web Design", "Booking"], "image": "", "url": "" }
+      { "id": "p1", "title": "Lumen Café", "subtitle": "Website redesign & online ordering", "category": "Hospitality", "year": "2026", "color": "#c98b5a", "tags": ["Web Design", "E-commerce"], "image": "", "url": "" },
+      { "id": "p2", "title": "Northwind Studio", "subtitle": "Portfolio site for an architecture firm", "category": "Architecture", "year": "2026", "color": "#7f97b2", "tags": ["UI / UX", "Portfolio"], "image": "", "url": "" },
+      { "id": "p3", "title": "FitPulse", "subtitle": "Launch page for a fitness app", "category": "Tech", "year": "2025", "color": "#9fc46a", "tags": ["Landing Page", "Branding"], "image": "", "url": "" },
+      { "id": "p4", "title": "Velvet Salon", "subtitle": "Booking-focused website for a beauty salon", "category": "Beauty", "year": "2025", "color": "#b98aa6", "tags": ["Web Design", "Booking"], "image": "", "url": "" },
+      { "id": "p5", "title": "Atlas Legal", "subtitle": "Trust-first website for a law firm", "category": "Professional", "year": "2025", "color": "#a39a86", "tags": ["Web Design", "Copywriting"], "image": "", "url": "" },
+      { "id": "p6", "title": "Kōji Ramen", "subtitle": "Menu, story and reservations", "category": "Hospitality", "year": "2024", "color": "#d0694f", "tags": ["Web Design", "Reservations"], "image": "", "url": "" }
     ]
   },
   "services": {
-    "eyebrow": "What I do",
-    "heading": "Services",
+    "eyebrow": "Services",
+    "heading": "Everything you need\nto look *world-class* online",
+    "intro": "From a single landing page to a full website — designed, built, launched and looked after.",
     "items": [
-      { "id": "s1", "title": "Website Design", "text": "Custom, considered designs tailored to your brand — no templates." },
-      { "id": "s2", "title": "Development", "text": "Fast, responsive builds that feel effortless on every device." },
-      { "id": "s3", "title": "Landing Pages", "text": "Focused pages for launches, campaigns and lead generation." },
-      { "id": "s4", "title": "Redesigns", "text": "A fresh look, better speed and clearer messaging for your current site." }
-    ]
-  },
-  "process": {
-    "eyebrow": "How I work",
-    "heading": "Simple process,\n*great results.*",
+      { "id": "s1", "title": "Website Design", "text": "Custom, considered designs tailored to your brand — never templates.", "points": ["Brand-led art direction", "Mobile-first layouts", "Design system & components"] },
+      { "id": "s2", "title": "Development", "text": "Fast, responsive builds that feel effortless on every device.", "points": ["Lightning-fast loading", "SEO-ready structure", "Edit content yourself"] },
+      { "id": "s3", "title": "Landing Pages", "text": "Focused pages for launches, campaigns and lead generation.", "points": ["Conversion-focused copy", "A/B ready", "Analytics set up"] },
+      { "id": "s4", "title": "Care & Support", "text": "Hosting, updates and small changes, so your site stays perfect.", "points": ["Hosting & domain help", "Monthly updates", "Priority support"] }
+    ],
+    "packagesHeading": "Pricing",
+    "packagesText": "Simple, per-page pricing. You'll get an exact quote after the brief.",
+    "pricing": {
+      "currency": "ZAR",
+      "homePage": 1000,
+      "extraPage": 1500,
+      "largeAfter": 6,
+      "largePrice": 10000
+    },
+    "packages": [
+      { "id": "pk1", "name": "Homepage", "amount": 1000, "from": false, "pagesLabel": "1 page", "text": "A single, beautiful homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "About 1 week"], "featured": false },
+      { "id": "pk2", "name": "Business", "amount": 2500, "from": true, "pagesLabel": "2 – {largeAfter} pages", "text": "Homepage {home} + {page} for every extra page.", "features": ["Up to {largeAfter} pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "2–3 weeks"], "featured": true },
+      { "id": "pk3", "name": "Large", "amount": 10000, "from": true, "pagesLabel": "{largeAfterPlus}+ pages", "text": "Bigger sites with shops, animations and more.", "features": ["Unlimited pages", "Online shop / payments", "Custom animations", "Multi-language", "Priority support"], "featured": false }
+    ],
+    "processHeading": "How it *works*",
     "steps": [
       { "id": "st1", "title": "Brief", "text": "You fill in my project form so I know exactly what you need." },
-      { "id": "st2", "title": "Design", "text": "I create the look and layout, and we refine it together." },
+      { "id": "st2", "title": "Design", "text": "I design the look and layout, and we refine it together." },
       { "id": "st3", "title": "Build", "text": "Your site gets built — fast, responsive and SEO-ready." },
       { "id": "st4", "title": "Launch", "text": "We go live on your domain, and I'm here for support afterwards." }
+    ],
+    "faqHeading": "Questions",
+    "faq": [
+      { "id": "f1", "q": "How long does a website take?", "a": "Most websites take 2–4 weeks from brief to launch. A landing page can be ready in about a week." },
+      { "id": "f2", "q": "Do I need my own domain?", "a": "No problem if you don't have one yet — I'll help you choose and set it up." },
+      { "id": "f3", "q": "Can I edit the website myself?", "a": "Yes. I can add an easy admin panel so you can change text and images without touching code." },
+      { "id": "f4", "q": "What do you need from me?", "a": "Your logo (if you have one), some photos and a few words about your business. I can help with the rest." },
+      { "id": "f5", "q": "How does payment work?", "a": "50% to start, 50% at launch. For larger projects we can split it into more parts." },
+      { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in South African rand) at today's exchange rate. The final quote is confirmed after the brief." }
     ]
   },
   "about": {
     "eyebrow": "About",
     "heading": "Design with *purpose.*",
-    "body": "I'm Edwin Dol, a website designer who believes a great website should do more than look good — it should help your business grow. I combine clean design, smooth user experience and solid code to build sites that feel effortless to use.\n\nWhen I'm not designing, you'll find me exploring new design trends, gaming, or sketching ideas for the next project.",
+    "intro": "I'm Edwin Dol — an independent website designer helping brands and small businesses look as good online as they are in real life.",
+    "body": "I believe a great website should do more than look good — it should help your business grow. I combine clean design, smooth user experience and solid code to build sites that feel effortless to use.\n\nWorking alone means you always talk directly to the person designing your site. No account managers, no hand-offs — just fast, honest collaboration.\n\nWhen I'm not designing, you'll find me exploring new design trends, gaming, or sketching ideas for the next project.",
     "photo": "",
-    "skills": ["Figma", "HTML / CSS", "JavaScript", "Webflow", "WordPress", "Responsive Design", "SEO"]
+    "valuesHeading": "What I *care* about",
+    "values": [
+      { "id": "v1", "title": "Clarity", "text": "Every element earns its place. Less noise, more meaning." },
+      { "id": "v2", "title": "Craft", "text": "Spacing, type, motion — the small details that make it feel premium." },
+      { "id": "v3", "title": "Results", "text": "Beautiful is the baseline. The real goal is more customers for you." }
+    ],
+    "experienceHeading": "Experience",
+    "experience": [
+      { "id": "e1", "year": "2024 — now", "title": "Independent Website Designer", "text": "Designing and building websites for brands across Europe." },
+      { "id": "e2", "year": "2022 — 2024", "title": "Freelance Web Designer", "text": "Landing pages and websites for local businesses and startups." },
+      { "id": "e3", "year": "2021", "title": "First client website", "text": "Where it all started — and I haven't stopped since." }
+    ],
+    "skillsHeading": "Tools",
+    "skills": ["Figma", "HTML / CSS", "JavaScript", "Webflow", "WordPress", "Framer", "Responsive Design", "SEO", "Vercel"]
   },
   "contact": {
     "eyebrow": "Contact",
-    "heading": "Got a question?\n*Say hello.*",
-    "text": "Quick question? Send a message here. Ready to start a website? Use the project form — it helps me give you a quote faster."
+    "heading": "Let's *talk.*",
+    "text": "Quick question? Send a message. Ready to start a website? The project form helps me give you a quote faster.",
+    "briefHeading": "Starting a new website?",
+    "briefText": "Fill in the project brief — about 5 minutes — and get a quote within 24 hours.",
+    "response": "I reply within 24 hours, Monday to Saturday."
   }
 }

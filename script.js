@@ -1,23 +1,10 @@
 // ---------- Year ----------
 document.querySelectorAll(".year").forEach((el) => (el.textContent = new Date().getFullYear()));
 
-// ---------- Nav ----------
-const nav = document.querySelector(".nav");
-const toggle = document.querySelector(".nav-toggle");
-const links = document.querySelector(".nav-links");
-
-window.addEventListener("scroll", () => nav.classList.toggle("scrolled", window.scrollY > 10), { passive: true });
-
-toggle?.addEventListener("click", () => {
-  const open = links.classList.toggle("open");
-  toggle.setAttribute("aria-expanded", String(open));
-});
-links?.querySelectorAll("a").forEach((a) =>
-  a.addEventListener("click", () => {
-    links.classList.remove("open");
-    toggle?.setAttribute("aria-expanded", "false");
-  })
-);
+// ---------- Nav border on scroll (header is injected by site.js) ----------
+window.addEventListener("scroll", () => {
+  document.querySelector(".nav")?.classList.toggle("scrolled", window.scrollY > 10);
+}, { passive: true });
 
 // ---------- Reveal on scroll ----------
 const io = new IntersectionObserver(
