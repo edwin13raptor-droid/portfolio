@@ -31,7 +31,7 @@
     BDT: 6.7, LKR: 16.5, AUD: 0.085, NZD: 0.095, SGD: 0.074, MYR: 0.25, PHP: 3.2, IDR: 890, THB: 1.9, JPY: 8.4, CNY: 0.4, KRW: 77, HKD: 0.43,
   };
   const PICKER = ["ZAR", "USD", "EUR", "GBP", "AUD", "CAD", "INR", "NGN", "KES", "AED", "NZD", "BWP", "NAD"];
-  const fx = { base: "ZAR", code: "ZAR", rate: 1, live: false, rates: null };
+  const fx = { base: "USD", code: "USD", rate: 1, live: false, rates: null };
 
   function rateFor(code) {
     if (code === fx.base) return 1;
@@ -52,45 +52,67 @@
     const step = Math.pow(10, Math.max(0, digits - 2));
     return Math.round(v / step) * step;
   }
-  // Convert to the visitor's currency. With pricing rules `p`, totals like home + k × page
-  // are converted part by part so "$55 + 2 × $83" really adds up to $221.
+  // Base-currency amount → visitor's currency (rounded to a friendly number)
+  const conv = (n) => (fx.code === fx.base ? n : nice(n * fx.rate));
+  // Convert an amount; with pricing rules `p`, amounts like home + k × page are converted
+  // part by part so they match the calculator exactly.
   function convert(n, p) {
     if (fx.code === fx.base) return n;
     if (p && p.extraPage) {
       const k = (n - p.homePage) / p.extraPage;
-      if (Number.isInteger(k) && k >= 0 && k < p.largeAfter) return nice(p.homePage * fx.rate) + k * nice(p.extraPage * fx.rate);
+      if (Number.isInteger(k) && k >= 0 && k < p.largeAfter) return conv(p.homePage) + k * conv(p.extraPage);
     }
-    return nice(n * fx.rate);
+    return conv(n);
   }
-  function money(amount, p) {
-    const v = convert(Number(amount) || 0, p);
+  // Format a value that is already in the visitor's currency
+  function fmt(v) {
     try {
       return new Intl.NumberFormat(undefined, { style: "currency", currency: fx.code, currencyDisplay: "narrowSymbol", maximumFractionDigits: 0 }).format(v);
     } catch {
       return `${fx.code} ${Math.round(v).toLocaleString()}`;
     }
   }
-  function priceOf(pages, p) {
-    if (pages > p.largeAfter) return { amount: p.largePrice, from: true };
-    return { amount: p.homePage + Math.max(0, pages - 1) * p.extraPage, from: false };
+  const money = (amount, p) => fmt(convert(Number(amount) || 0, p));
+
+  /* ---- The pricing rules ----
+     Main pages (custom designs: Home, About, Contact…):
+       1 page        → homePage                        ($100)
+       2–6 pages     → homePage + extraPage × (n − 1)  ($100 + $150 each)
+       7+ pages      → capped at largePrice            ($1,000 flat)
+     Inner pages (templated: blog posts, products, portfolio items):
+       innerPage × m, never capped                     ($25 each)
+     Total = main pages cost + inner pages cost
+     Everything is calculated from converted unit prices, so each breakdown line adds up exactly. */
+  function quote(mainPages, innerPages, p) {
+    const main = Math.max(1, Math.floor(mainPages) || 1);
+    const inner = Math.max(0, Math.floor(innerPages) || 0);
+    const unit = { home: conv(p.homePage), page: conv(p.extraPage), cap: conv(p.largePrice), inner: conv(p.innerPage) };
+    const uncapped = unit.home + (main - 1) * unit.page;
+    const capped = main > p.largeAfter;
+    const mainCost = capped ? unit.cap : uncapped;
+    const innerCost = inner * unit.inner;
+    return { main, inner, unit, capped, uncapped, mainCost, innerCost, total: mainCost + innerCost };
   }
-  // Replace {home} {page} {large} {largeAfter} {largeAfterPlus} in package texts
+
+  // Replace {home} {page} {large} {inner} {largeAfter} {largeAfterPlus} in package texts
   function fill(text, p) {
     return esc(text)
       .replace(/\{home\}/g, money(p.homePage))
       .replace(/\{page\}/g, money(p.extraPage))
       .replace(/\{large\}/g, money(p.largePrice))
+      .replace(/\{inner\}/g, money(p.innerPage))
       .replace(/\{largeAfterPlus\}/g, String(p.largeAfter + 1))
       .replace(/\{largeAfter\}/g, String(p.largeAfter));
   }
   function pricingOf(c) {
     const p = c.services?.pricing || {};
     return {
-      currency: String(p.currency || "ZAR").toUpperCase(),
+      currency: String(p.currency || "USD").toUpperCase(),
       homePage: Number(p.homePage) || 0,
       extraPage: Number(p.extraPage) || 0,
       largeAfter: Number(p.largeAfter) || 6,
       largePrice: Number(p.largePrice) || 0,
+      innerPage: Number(p.innerPage) || 0,
     };
   }
 
@@ -154,24 +176,59 @@
     // Price calculator
     const calc = document.getElementById("price-calc");
     if (calc) {
-      const range = calc.querySelector("input[type=range]");
+      const mainR = calc.querySelector('input[name="main"]');
+      const innerR = calc.querySelector('input[name="inner"]');
+      const innerN = calc.querySelector('input[name="innerCount"]');
+      const mainOut = calc.querySelector('[data-out="main"]');
       const out = calc.querySelector(".calc-price");
-      const pagesOut = calc.querySelector(".calc-pages");
-      const breakdown = calc.querySelector(".calc-breakdown");
-      range.max = String(Math.max(12, p.largeAfter + 4));
-      const update = () => {
-        const n = Number(range.value);
-        const { amount, from } = priceOf(n, p);
-        pagesOut.textContent = `${n} ${n === 1 ? "page" : "pages"}`;
-        out.innerHTML = `${from ? "<small>from</small> " : ""}${money(amount, p)}`;
-        breakdown.textContent = n > p.largeAfter
-          ? `Large website (${p.largeAfter + 1}+ pages)`
-          : n === 1 ? `Homepage ${money(p.homePage)}`
-          : `Homepage ${money(p.homePage)} + ${n - 1} × ${money(p.extraPage)}`;
-        range.style.setProperty("--fill", `${((n - 1) / (Number(range.max) - 1)) * 100}%`);
+      const lines = calc.querySelector(".calc-breakdown");
+      const hint = calc.querySelector(".calc-hint");
+      calc.querySelectorAll("[data-unit]").forEach((el) => {
+        const k = el.dataset.unit;
+        el.textContent = k === "inner" ? fmt(conv(p.innerPage)) : k === "cap" ? fmt(conv(p.largePrice)) : String(p.largeAfter + 1);
+      });
+      mainR.max = String(Math.max(12, p.largeAfter + 6));
+
+      const fillBar = (r) => r.style.setProperty("--fill", `${((r.value - r.min) / (r.max - r.min)) * 100}%`);
+      const row = (label, detail, amount, cls = "") =>
+        `<li class="${cls}"><span class="b-label">${label}<small>${detail}</small></span><span class="b-amt">${amount}</span></li>`;
+
+      const update = (e) => {
+        // keep the inner-pages slider and number box in sync (the number box has no limit)
+        if (e?.target === innerN) innerR.value = Math.min(Number(innerN.value) || 0, Number(innerR.max));
+        if (e?.target === innerR) innerN.value = innerR.value;
+        if (Number(innerN.value) < 0) innerN.value = "0";
+
+        const q = quote(Number(mainR.value), Number(innerN.value), p);
+        mainOut.textContent = String(q.main);
+        out.innerHTML = fmt(q.total);
+
+        const mainDetail = q.capped
+          ? `${p.largeAfter + 1}+ main pages are capped at ${fmt(q.unit.cap)} flat`
+          : q.main === 1
+            ? `Homepage — ${fmt(q.unit.home)}`
+            : `Homepage ${fmt(q.unit.home)} + ${q.main - 1} × ${fmt(q.unit.page)}`;
+        const innerDetail = q.inner
+          ? `${q.inner} × ${fmt(q.unit.inner)} — never capped`
+          : `${fmt(q.unit.inner)} each — blog posts, products, portfolio items`;
+        lines.innerHTML =
+          row(`Main pages <b>× ${q.main}</b>`, mainDetail, fmt(q.mainCost)) +
+          row(`Inner pages <b>× ${q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
+          row("Total", "Main pages + inner pages", fmt(q.total), "b-total");
+
+        hint.textContent = q.capped && q.uncapped > q.mainCost
+          ? `The cap saves you ${fmt(q.uncapped - q.mainCost)} on main pages.`
+          : q.capped
+            ? `You've reached the cap — more main pages won't cost extra.`
+            : q.main === p.largeAfter
+              ? `From ${p.largeAfter + 1} main pages, the price is capped at ${fmt(q.unit.cap)}.`
+              : `Main pages are capped at ${fmt(q.unit.cap)} from ${p.largeAfter + 1} pages. Inner pages are ${fmt(q.unit.inner)} each with no cap.`;
+
+        calc.classList.toggle("is-capped", q.capped);
+        fillBar(mainR); fillBar(innerR);
         out.classList.remove("bump"); void out.offsetWidth; out.classList.add("bump");
       };
-      range.oninput = update;
+      mainR.oninput = innerR.oninput = innerN.oninput = update;
       update();
     }
 

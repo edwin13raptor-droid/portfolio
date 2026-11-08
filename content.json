@@ -62,18 +62,19 @@
       { "id": "s4", "title": "Care & Support", "text": "Hosting, updates and small changes, so your site stays perfect.", "points": ["Hosting & domain help", "Monthly updates", "Priority support"] }
     ],
     "packagesHeading": "Pricing",
-    "packagesText": "Simple, per-page pricing. You'll get an exact quote after the brief.",
+    "packagesText": "Simple, transparent pricing: main pages are capped, inner pages are a small flat fee each.",
     "pricing": {
-      "currency": "ZAR",
-      "homePage": 1000,
-      "extraPage": 1500,
+      "currency": "USD",
+      "homePage": 100,
+      "extraPage": 150,
       "largeAfter": 6,
-      "largePrice": 10000
+      "largePrice": 1000,
+      "innerPage": 25
     },
     "packages": [
-      { "id": "pk1", "name": "Homepage", "amount": 1000, "from": false, "pagesLabel": "1 page", "text": "A single, beautiful homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "About 1 week"], "featured": false },
-      { "id": "pk2", "name": "Business", "amount": 2500, "from": true, "pagesLabel": "2 – {largeAfter} pages", "text": "Homepage {home} + {page} for every extra page.", "features": ["Up to {largeAfter} pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "2–3 weeks"], "featured": true },
-      { "id": "pk3", "name": "Large", "amount": 10000, "from": true, "pagesLabel": "{largeAfterPlus}+ pages", "text": "Bigger sites with shops, animations and more.", "features": ["Unlimited pages", "Online shop / payments", "Custom animations", "Multi-language", "Priority support"], "featured": false }
+      { "id": "pk1", "name": "Single page", "amount": 100, "from": false, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
+      { "id": "pk2", "name": "Business", "amount": 250, "from": true, "pagesLabel": "2 – {largeAfter} main pages", "text": "Homepage {home} + {page} for each additional main page.", "features": ["Up to {largeAfter} custom pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "+ {inner} per inner page"], "featured": true },
+      { "id": "pk3", "name": "Unlimited", "amount": 1000, "from": false, "pagesLabel": "{largeAfterPlus}+ main pages", "text": "Main pages are capped at {large} — add as many as you need.", "features": ["Unlimited main pages", "Online shop / payments", "Custom animations", "Multi-language", "+ {inner} per inner page"], "featured": false }
     ],
     "processHeading": "How it *works*",
     "steps": [
@@ -89,7 +90,8 @@
       { "id": "f3", "q": "Can I edit the website myself?", "a": "Yes. I can add an easy admin panel so you can change text and images without touching code." },
       { "id": "f4", "q": "What do you need from me?", "a": "Your logo (if you have one), some photos and a few words about your business. I can help with the rest." },
       { "id": "f5", "q": "How does payment work?", "a": "50% to start, 50% at launch. For larger projects we can split it into more parts." },
-      { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in South African rand) at today's exchange rate. The final quote is confirmed after the brief." }
+      { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in US dollars) at today's exchange rate. The final quote is confirmed after the brief." },
+      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at a maximum price; inner pages are a small flat fee each." }
     ]
   },
   "about": {

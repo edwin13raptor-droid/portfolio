@@ -59,12 +59,17 @@ The repo is on GitHub: `edwin13raptor-droid/portfolio`. Every `git push` redeplo
 
 ## Pricing
 
-Set in the admin panel → **Services** (amounts in your own currency, default **ZAR**):
+Set in the admin panel → **Services**. Amounts are in your own currency (default **USD**):
 
-| Rule | Default |
+**Main pages** — custom designs like Home, About, Contact
+| Main pages | Price |
 |---|---|
-| Homepage | R1,000 |
-| Each extra page | R1,500 |
-| More than 6 pages | from R10,000 |
+| 1 | $100 |
+| 2 – 6 | $100 for the homepage + $150 for each additional page |
+| 7+ | capped at $1,000 flat |
 
-Visitors see prices converted to their own currency (detected from their region on Vercel, or their browser language), rounded to friendly numbers. They can switch currency with the picker on the Services page. There's also a page-count price calculator.
+**Inner pages** — templated pages like blog posts, products, portfolio items: **$25 each, never capped**.
+
+**Total = main pages cost (max $1,000) + inner pages cost.**
+
+The calculator on the Services page has a slider for each, and a line-by-line breakdown. Visitors see prices converted to their own currency (detected from their region on Vercel, or their browser language), with a currency picker to switch. Converted unit prices are rounded first, so the breakdown always adds up exactly.

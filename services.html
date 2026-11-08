@@ -41,12 +41,33 @@
       <div class="calc reveal" id="price-calc">
         <div class="calc-top">
           <p class="eyebrow">Price calculator</p>
-          <p class="calc-pages">1 page</p>
+          <p class="calc-hint"></p>
         </div>
-        <p class="calc-price">—</p>
-        <input type="range" min="1" max="12" value="1" step="1" aria-label="Number of pages" />
+        <p class="calc-price" aria-live="polite">—</p>
+
+        <div class="calc-inputs">
+          <div class="calc-input">
+            <div class="calc-label">
+              <label for="calc-main">Main pages</label>
+              <span class="calc-count" data-out="main">1</span>
+            </div>
+            <p class="calc-sub">Custom designs — Home, About, Contact… Capped at <span data-unit="cap"></span> from <span data-unit="after"></span> pages.</p>
+            <input id="calc-main" type="range" name="main" min="1" max="12" value="1" step="1" />
+          </div>
+          <div class="calc-input">
+            <div class="calc-label">
+              <label for="calc-inner">Inner pages</label>
+              <input class="calc-number" type="number" name="innerCount" min="0" step="1" value="0" aria-label="Number of inner pages" inputmode="numeric" />
+            </div>
+            <p class="calc-sub">Template pages — blog posts, products, portfolio items. <span data-unit="inner"></span> each, never capped.</p>
+            <input id="calc-inner" type="range" name="inner" min="0" max="50" value="0" step="1" />
+          </div>
+        </div>
+
+        <ul class="calc-breakdown"></ul>
+
         <div class="calc-bottom">
-          <p class="calc-breakdown"></p>
+          <p class="calc-sub">Final quote confirmed after your project brief.</p>
           <a href="start.html" class="btn btn-small">Get an exact quote <span class="arrow">→</span></a>
         </div>
       </div>
