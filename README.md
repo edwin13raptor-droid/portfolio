@@ -53,9 +53,8 @@ The repo is on GitHub: `edwin13raptor-droid/portfolio`. Every `git push` redeplo
 
 ## Client workflow
 1. Send customers `https://<your-site>/start`.
-2. Their answers arrive in your inbox, with a **copy-paste brief** at the bottom.
-3. Paste that brief into Claude to start a new session for that client's site in its own folder, e.g. `D:\Claude\websites\<client-name>`.
-
+2. Their answers arrive in your inbox with a **`brief-<client-name>.json`** file attached (plus a readable version in the email).
+3. In Claude, press **+** on the **Websites** group, drop the JSON file in and say "build this client's website". The file tells the session to work in `D:\Claude\websites\<client-name>`.
 ---
 
 ## Pricing
