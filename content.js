@@ -11,11 +11,7 @@ window.DEFAULT_CONTENT = {
     "available": true,
     "availableText": "Available for new projects",
     "accent": "#d4ff5a",
-    "socials": [
-      { "label": "Instagram", "url": "https://instagram.com" },
-      { "label": "LinkedIn", "url": "https://linkedin.com" },
-      { "label": "Dribbble", "url": "https://dribbble.com" }
-    ]
+    "socials": []
   },
   "home": {
     "heading": "Websites, designed\nwith *intention.*",

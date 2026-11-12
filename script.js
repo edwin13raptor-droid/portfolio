@@ -246,11 +246,57 @@ document.querySelectorAll("form[data-form]").forEach((form) => {
   const button = form.querySelector('button[type="submit"]');
   const type = form.dataset.form;
 
+  // ---- Draft autosave: answers survive a refresh or closed tab until the form is sent ----
+  const draftKey = `draft:${type}`;
+  const fields = () => {
+    const seen = {};
+    return [...form.elements].filter((el) => el.name && el.name !== "company_website" && el.type !== "file")
+      .map((el) => ({ el, key: `${el.name}#${(seen[el.name] = (seen[el.name] ?? -1) + 1)}` }));
+  };
+  const saveDraft = () => {
+    const data = {};
+    fields().forEach(({ el, key }) => { data[key] = el.type === "checkbox" || el.type === "radio" ? el.checked : el.value; });
+    try { localStorage.setItem(draftKey, JSON.stringify(data)); } catch {}
+  };
+  const clearDraft = () => { try { localStorage.removeItem(draftKey); } catch {} };
+  let restored = false;
+  try {
+    const data = JSON.parse(localStorage.getItem(draftKey) || "null");
+    if (data) {
+      fields().forEach(({ el, key }) => {
+        if (!(key in data)) return;
+        if (el.type === "checkbox" || el.type === "radio") el.checked = !!data[key];
+        else if (data[key] !== el.value) { el.value = data[key]; if (el.tagName === "SELECT") el.dispatchEvent(new Event("change")); }
+        if ((el.type === "checkbox" || el.type === "radio" ? el.checked && !el.defaultChecked : el.value) ) restored = true;
+      });
+    }
+  } catch {}
+  if (restored) setTimeout(() => window.toast?.("Welcome back — your answers were saved."), 900);
+  let draftTimer;
+  const queueDraft = () => { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 400); };
+
+  // ---- Character counter on long text fields ----
+  form.querySelectorAll("textarea[maxlength]").forEach((ta) => {
+    const counter = document.createElement("span");
+    counter.className = "char-count";
+    ta.insertAdjacentElement("afterend", counter);
+    const upd = () => {
+      counter.textContent = `${ta.value.length.toLocaleString()} / ${Number(ta.maxLength).toLocaleString()}`;
+      counter.classList.toggle("near", ta.value.length > ta.maxLength * 0.9);
+    };
+    ta.addEventListener("input", upd);
+    upd();
+    // Ctrl/Cmd + Enter sends the form from inside a text box
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); form.requestSubmit(); } });
+  });
+
   updateConditionals(form);
-  form.addEventListener("change", () => { updateConditionals(form); updateProgress(form); });
+  updateProgress(form);
+  form.addEventListener("change", () => { updateConditionals(form); updateProgress(form); queueDraft(); });
   form.addEventListener("input", (e) => {
     e.target.closest(".field")?.classList.remove("invalid");
     updateProgress(form);
+    queueDraft();
   });
 
   form.addEventListener("submit", async (e) => {
@@ -263,7 +309,7 @@ document.querySelectorAll("form[data-form]").forEach((form) => {
       return;
     }
 
-    const label = button.textContent;
+    const label = button.innerHTML; // keep the arrow icon
     button.disabled = true;
     button.textContent = "Sending…";
 
@@ -277,6 +323,8 @@ document.querySelectorAll("form[data-form]").forEach((form) => {
       if (!res.ok) throw new Error(json.error || "Something went wrong.");
 
       form.reset();
+      clearDraft();
+      form.querySelectorAll("textarea").forEach((t) => t.dispatchEvent(new Event("input")));
       updateConditionals(form);
       updateProgress(form);
 
@@ -295,7 +343,63 @@ document.querySelectorAll("form[data-form]").forEach((form) => {
       status.classList.add("error");
     } finally {
       button.disabled = false;
-      button.textContent = label;
+      button.innerHTML = label;
     }
   });
 });
+
+// ---------- Toast: small message at the bottom of the screen ----------
+window.toast = (msg) => {
+  let box = document.querySelector(".toasts");
+  if (!box) { box = document.createElement("div"); box.className = "toasts"; box.setAttribute("role", "status"); box.setAttribute("aria-live", "polite"); document.body.append(box); }
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  box.append(t);
+  setTimeout(() => t.classList.add("out"), 2400);
+  setTimeout(() => t.remove(), 2800);
+};
+
+// ---------- Click-to-copy (any [data-copy] button) ----------
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // fallback for older browsers / pages opened as a file
+    const ta = Object.assign(document.createElement("textarea"), { value: text });
+    ta.style.cssText = "position:fixed;opacity:0";
+    document.body.append(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  }
+}
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  e.preventDefault();
+  const ok = await copyText(btn.dataset.copy);
+  window.toast(ok ? "Email copied to your clipboard" : "Couldn't copy — select it instead");
+  if (!ok) return;
+  btn.classList.add("copied");
+  const label = btn.querySelector(".copy-text");
+  if (label) label.textContent = "Copied";
+  clearTimeout(btn._t);
+  btn._t = setTimeout(() => { btn.classList.remove("copied"); if (label) label.textContent = "Copy"; }, 1800);
+});
+
+// ---------- Back-to-top button ----------
+(() => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "to-top";
+  b.setAttribute("aria-label", "Back to top");
+  b.innerHTML = '<span aria-hidden="true">↑</span>';
+  b.addEventListener("click", () => window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
+  document.body.append(b);
+  const upd = () => b.classList.toggle("show", scrollY > innerHeight * 1.2);
+  addEventListener("scroll", upd, { passive: true });
+  upd();
+})();

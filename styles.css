@@ -629,6 +629,60 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 :focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
 input:focus-visible, textarea:focus-visible, .cselect-btn:focus-visible { outline: none; }
 
+/* =========================================================
+   Small helpers: copy button, toast, char counter, back to top
+   ========================================================= */
+.copy-row { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  background: transparent; color: var(--muted); border: 1px solid var(--line-2); border-radius: 999px;
+  padding: 3px 10px 3px 8px; font: 500 .74rem var(--body); letter-spacing: .02em;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.copy-btn:hover { color: var(--text); border-color: var(--muted); }
+.copy-icon { width: 11px; height: 11px; position: relative; flex: none; }
+.copy-icon::before, .copy-icon::after { content: ""; position: absolute; width: 8px; height: 8px; border: 1.3px solid currentColor; border-radius: 2px; }
+.copy-icon::before { left: 0; top: 0; opacity: .55; }
+.copy-icon::after { right: 0; bottom: 0; background: var(--bg); }
+.copy-btn.copied { color: #0a0a0a; background: var(--accent); border-color: var(--accent); }
+.copy-btn.copied .copy-icon::before { display: none; }
+.copy-btn.copied .copy-icon::after { width: 9px; height: 5px; border-width: 0 0 1.5px 1.5px; border-radius: 0; background: none; transform: rotate(-45deg) translate(1px, -2px); }
+.footer-grid .copy-row { justify-content: flex-start; }
+.footer-grid .dot { display: inline-block; margin-right: 6px; vertical-align: middle; }
+
+.toasts { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 980; display: grid; gap: 8px; pointer-events: none; }
+.toast {
+  background: var(--text); color: var(--bg); padding: 11px 20px; border-radius: 999px;
+  font: 500 .88rem var(--body); box-shadow: 0 14px 40px -10px rgba(0,0,0,.6); white-space: nowrap;
+  animation: toast-in .35s var(--ease); transition: opacity .35s, transform .35s;
+}
+.toast.out { opacity: 0; transform: translateY(8px); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+
+.char-count { justify-self: end; font-size: .74rem; color: var(--dim); font-variant-numeric: tabular-nums; margin-top: -2px; }
+.char-count.near { color: var(--danger); }
+
+.to-top {
+  position: fixed; right: 22px; bottom: 22px; z-index: 55; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--bg-3); color: var(--text); border: 1px solid var(--line-2); cursor: pointer; font-size: 1.05rem;
+  display: grid; place-items: center; opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity .35s var(--ease), transform .35s var(--ease), background .25s, color .25s;
+}
+.to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+.to-top:hover { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+.to-top:hover span { animation: nudge .6s var(--ease); }
+@keyframes nudge { 50% { transform: translateY(-3px); } }
+body.adm-open .to-top { display: none; }
+@media (max-width: 760px) { .to-top { right: 14px; bottom: 14px; width: 42px; height: 42px; } }
+
+/* 404 page */
+.not-found { position: relative; min-height: 70vh; }
+.big-404 {
+  position: absolute; right: var(--gutter); bottom: -40px; z-index: -1; pointer-events: none;
+  font: 600 clamp(8rem, 28vw, 26rem)/1 var(--display); letter-spacing: -0.07em;
+  color: transparent; -webkit-text-stroke: 1px var(--line-2);
+}
+
 /* ---------- Footer ---------- */
 .site-footer { max-width: var(--max); margin: 160px auto 0; padding: 0 var(--gutter) 28px; overflow: hidden; }
 .footer-cta { border-top: 1px solid var(--line); padding-top: 72px; }

@@ -309,6 +309,9 @@
     };
   }
 
+  // Small "copy" button — script.js handles the click (copies + shows "Copied")
+  const copyBtn = (value) => `<button type="button" class="copy-btn" data-copy="${esc(value)}" aria-label="Copy ${esc(value)}"><span class="copy-icon" aria-hidden="true"></span><span class="copy-text">Copy</span></button>`;
+
   function renderFooter(c) {
     const el = document.getElementById("site-footer");
     if (!el) return;
@@ -326,12 +329,21 @@
         </div>
         <div>
           <p class="footer-label">Contact</p>
-          <ul><li><a href="mailto:${esc(c.site.email)}">${esc(c.site.email)}</a></li><li>${esc(c.site.location)}</li></ul>
+          <ul>
+            <li class="copy-row"><a href="mailto:${esc(c.site.email)}">${esc(c.site.email)}</a>${copyBtn(c.site.email)}</li>
+            <li>${esc(c.site.location)}</li>
+          </ul>
         </div>
-        <div>
+        ${socials.length ? `<div>
           <p class="footer-label">Social</p>
-          <ul>${socials.length ? socials.map((s) => `<li><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(s.label)} ↗</a></li>`).join("") : "<li class='muted'>Coming soon</li>"}</ul>
-        </div>
+          <ul>${socials.map((s) => `<li><a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener">${esc(s.label)} ↗</a></li>`).join("")}</ul>
+        </div>` : `<div>
+          <p class="footer-label">Status</p>
+          <ul>
+            <li>${c.site.available ? '<span class="dot"></span> ' + esc(c.site.availableText) : "Fully booked right now"}</li>
+            <li>${esc(c.contact?.response || "")}</li>
+          </ul>
+        </div>`}
       </div>
       <div class="footer-bottom">
         <span>© ${new Date().getFullYear()} ${esc(c.site.name)} — ${esc(c.site.role)}</span>
@@ -470,11 +482,12 @@
 
     // Contact
     const links = [
-      { label: "Email", value: c.site.email, url: `mailto:${c.site.email}` },
+      // the email opens with a subject already filled in, and has a copy button
+      { label: "Email", value: c.site.email, url: `mailto:${c.site.email}?subject=${encodeURIComponent("Website project")}`, copy: c.site.email },
       ...(c.site.socials || []).filter((s) => safeUrl(s.url)).map((s) => ({ label: s.label, value: s.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""), url: s.url })),
     ];
     list("contact-links", links, (l) =>
-      `<li><span>${esc(l.label)}</span><a href="${esc(safeUrl(l.url))}"${l.url.startsWith("mailto:") ? "" : ' target="_blank" rel="noopener"'}>${esc(l.value)}</a></li>`);
+      `<li><span>${esc(l.label)}</span><span class="copy-row"><a href="${esc(l.url.startsWith("mailto:") ? l.url : safeUrl(l.url))}"${l.url.startsWith("mailto:") ? "" : ' target="_blank" rel="noopener"'}>${esc(l.value)}</a>${l.copy ? copyBtn(l.copy) : ""}</span></li>`);
 
     document.dispatchEvent(new Event("site:rendered")); // motion.js hooks in here
   }
