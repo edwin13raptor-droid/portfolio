@@ -43,7 +43,9 @@ export default async function handler(req, res) {
     if (!blobReady) return res.status(500).json({ error: "Vercel Blob isn't connected yet (BLOB_READ_WRITE_TOKEN missing)." });
 
     const { content } = readJson(req);
-    if (!content || typeof content !== "object" || Array.isArray(content) || !content.site || !content.hero) {
+    // Basic shape check: an object with the site settings and at least one page section
+    const isObj = (o) => o && typeof o === "object" && !Array.isArray(o);
+    if (!isObj(content) || !isObj(content.site) || !["home", "work", "services", "about", "contact"].some((k) => isObj(content[k]))) {
       return res.status(400).json({ error: "Invalid content." });
     }
     const json = JSON.stringify(content, null, 2);
