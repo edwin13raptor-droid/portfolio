@@ -275,6 +275,12 @@ main { min-height: 60vh; }
 .calc-price { font: 500 clamp(3rem, 8vw, 6rem)/1 var(--display); letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
 .calc-price.bump { animation: bump .45s var(--ease); }
 @keyframes bump { 0% { transform: translateY(6px); opacity: .4; } 100% { transform: none; opacity: 1; } }
+.calc-kind { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.calc-kind-label { font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.calc-kinds { display: flex; gap: 6px; flex-wrap: wrap; }
+.calc-kinds button { background: none; border: 1px solid var(--line-2); color: var(--muted); border-radius: 999px; padding: 7px 14px; font: 400 .86rem var(--body); cursor: pointer; transition: .25s var(--ease); }
+.calc-kinds button:hover { color: var(--text); border-color: var(--muted); }
+.calc-kinds button.on { background: var(--text); border-color: var(--text); color: var(--bg); }
 .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 48px; margin-top: 8px; }
 .calc-input { display: grid; gap: 10px; align-content: start; }
 .calc-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; }

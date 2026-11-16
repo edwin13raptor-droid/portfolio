@@ -45,6 +45,15 @@
         </div>
         <p class="calc-price" aria-live="polite">—</p>
 
+        <div class="calc-kind">
+          <span class="calc-kind-label">Type of site</span>
+          <div class="calc-kinds" role="group" aria-label="Type of site">
+            <button type="button" data-kind="business" class="on" aria-pressed="true">Business site</button>
+            <button type="button" data-kind="shop" aria-pressed="false">Online shop</button>
+            <button type="button" data-kind="blog" aria-pressed="false">Blog</button>
+          </div>
+        </div>
+
         <div class="calc-inputs">
           <div class="calc-input">
             <div class="calc-label">
@@ -59,7 +68,7 @@
               <label for="calc-inner">Inner pages</label>
               <input class="calc-number" type="number" name="innerCount" min="0" step="1" value="0" aria-label="Number of inner pages" inputmode="numeric" />
             </div>
-            <p class="calc-sub">Template pages — blog posts, products, portfolio items. <span data-unit="inner"></span> each, capped at <span data-unit="innerCap"></span> from <span data-unit="innerAfter"></span> pages.</p>
+            <p class="calc-sub calc-inner-sub">Template pages — blog posts, products, portfolio items. <span data-unit="inner"></span> each, capped at <span data-unit="innerCap"></span> from <span data-unit="innerAfter"></span> pages.</p>
             <input id="calc-inner" type="range" name="inner" min="0" max="50" value="0" step="1" />
           </div>
         </div>

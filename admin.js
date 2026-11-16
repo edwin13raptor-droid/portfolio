@@ -104,6 +104,7 @@
       { key: "services.pricing.innerPage", label: "Inner pages: price per page", type: "text" },
       { key: "services.pricing.innerCapAfter", label: "Inner pages: cap kicks in after how many pages", type: "text", hint: "30 = sites with 31+ inner pages pay the cap. 0 = no cap." },
       { key: "services.pricing.innerCap", label: "Inner pages: price cap", type: "text" },
+      { key: "services.pricing.shopBlogInnerCap", label: "Shops & blogs: max for all products / posts", type: "text", hint: "Products and blog posts never cost more than this in total." },
       { key: "services.packages", label: "Packages", type: "list", itemLabel: (i) => `${i.name} — ${i.amount}`,
         hint: "In texts you can use {home}, {page}, {large}, {largeAfter} — they turn into the right prices.",
         fields: [{ key: "name", label: "Name", type: "text" }, { key: "amount", label: "Price (number, your currency)", type: "text" },

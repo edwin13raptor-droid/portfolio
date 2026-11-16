@@ -87,24 +87,26 @@
        2–6 pages     → homePage + extraPage × (n − 1)  ($100 + $150 each)
        7+ pages      → capped at largePrice            ($1,000 flat)
      Inner pages (templated: blog posts, products, portfolio items):
-       1–30 pages    → innerPage × m                   ($25 each)
-       31+ pages     → capped at innerCap              ($750 flat)
+       business site → innerPage × m, max innerCap      ($25 each, max $750 from 31 pages)
+       shop or blog  → innerPage × m, max shopBlogCap   ($25 each, max $100 — products/posts barely count)
      Total = main pages cost + inner pages cost
      Everything is calculated from converted unit prices, so each breakdown line adds up exactly. */
-  function quote(mainPages, innerPages, p) {
+  function quote(mainPages, innerPages, p, kind = "business") {
     const main = Math.max(1, Math.floor(mainPages) || 1);
     const inner = Math.max(0, Math.floor(innerPages) || 0);
+    const shopBlog = kind === "shop" || kind === "blog";
     const unit = {
       home: conv(p.homePage), page: conv(p.extraPage), cap: conv(p.largePrice),
-      inner: conv(p.innerPage), innerCap: conv(p.innerCap),
+      inner: conv(p.innerPage), innerCap: conv(p.innerCap), shopCap: conv(p.shopBlogInnerCap),
     };
     const uncapped = unit.home + (main - 1) * unit.page;
     const capped = main > p.largeAfter;
     const mainCost = capped ? unit.cap : uncapped;
     const innerUncapped = inner * unit.inner;
-    const innerCapped = p.innerCapAfter > 0 && inner > p.innerCapAfter;
-    const innerCost = innerCapped ? unit.innerCap : innerUncapped;
-    return { main, inner, unit, capped, uncapped, mainCost, innerCapped, innerUncapped, innerCost, total: mainCost + innerCost };
+    const innerLimit = shopBlog && p.shopBlogInnerCap ? unit.shopCap : p.innerCapAfter > 0 ? unit.innerCap : Infinity;
+    const innerCapped = innerUncapped > innerLimit;
+    const innerCost = innerCapped ? innerLimit : innerUncapped;
+    return { main, inner, unit, shopBlog, kind, capped, uncapped, mainCost, innerCapped, innerUncapped, innerLimit, innerCost, total: mainCost + innerCost };
   }
 
   // Replace {home} {page} {large} {inner} {largeAfter} {largeAfterPlus} in package texts
@@ -115,6 +117,7 @@
       .replace(/\{large\}/g, money(p.largePrice))
       .replace(/\{innerCapAfter\}/g, String(p.innerCapAfter))
       .replace(/\{innerCap\}/g, money(p.innerCap))
+      .replace(/\{shopCap\}/g, money(p.shopBlogInnerCap))
       .replace(/\{inner\}/g, money(p.innerPage))
       .replace(/\{largeAfterPlus\}/g, String(p.largeAfter + 1))
       .replace(/\{largeAfter\}/g, String(p.largeAfter));
@@ -130,6 +133,7 @@
       innerPage: Number(p.innerPage) || 0,
       innerCapAfter: Number(p.innerCapAfter) || 0, // 0 = no cap
       innerCap: Number(p.innerCap) || 0,
+      shopBlogInnerCap: Number(p.shopBlogInnerCap) || 0,
     };
   }
 
@@ -204,9 +208,22 @@
         const k = el.dataset.unit;
         el.textContent = {
           inner: fmt(conv(p.innerPage)), cap: fmt(conv(p.largePrice)), after: String(p.largeAfter + 1),
-          innerCap: fmt(conv(p.innerCap)), innerAfter: String(p.innerCapAfter + 1),
+          innerCap: fmt(conv(p.innerCap)), innerAfter: String(p.innerCapAfter + 1), shopCap: fmt(conv(p.shopBlogInnerCap)),
         }[k] ?? "";
       });
+      // Type of site: business / shop / blog (kept on the element so it survives currency changes)
+      const kinds = calc.querySelector(".calc-kinds");
+      if (kinds && !kinds.dataset.bound) {
+        kinds.dataset.bound = "1";
+        kinds.addEventListener("click", (e) => {
+          const b = e.target.closest("button[data-kind]");
+          if (!b) return;
+          calc.dataset.kind = b.dataset.kind;
+          kinds.querySelectorAll("button").forEach((x) => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", String(x === b)); });
+          update();
+        });
+      }
+      const INNER_NAME = { business: "Inner pages", shop: "Products", blog: "Blog posts" };
       mainR.max = String(Math.max(12, p.largeAfter + 6));
       if (p.innerCapAfter) innerR.max = String(p.innerCapAfter + 10);
 
@@ -220,9 +237,17 @@
         if (e?.target === innerR) innerN.value = innerR.value;
         if (Number(innerN.value) < 0) innerN.value = "0";
 
-        const q = quote(Number(mainR.value), Number(innerN.value), p);
+        const kind = calc.dataset.kind || "business";
+        const q = quote(Number(mainR.value), Number(innerN.value), p, kind);
         mainOut.textContent = String(q.main);
         out.innerHTML = fmt(q.total);
+        const innerName = INNER_NAME[kind] || "Inner pages";
+        const innerLabel = calc.querySelector('label[for="calc-inner"]');
+        if (innerLabel) innerLabel.textContent = innerName;
+        const innerSub = calc.querySelector(".calc-inner-sub");
+        if (innerSub) innerSub.textContent = q.shopBlog
+          ? `${innerName} are ${fmt(q.unit.inner)} each, but never more than ${fmt(q.unit.shopCap)} in total — add as many as you like.`
+          : `Template pages — blog posts, products, portfolio items. ${fmt(q.unit.inner)} each, capped at ${fmt(q.unit.innerCap)} from ${p.innerCapAfter + 1} pages.`;
 
         const mainDetail = q.capped
           ? `${p.largeAfter + 1}+ main pages are capped at ${fmt(q.unit.cap)} flat`
@@ -230,14 +255,16 @@
             ? `Homepage — ${fmt(q.unit.home)}`
             : `Homepage ${fmt(q.unit.home)} + ${q.main - 1} × ${fmt(q.unit.page)}`;
         const innerDetail = q.innerCapped
-          ? `${p.innerCapAfter + 1}+ inner pages are capped at ${fmt(q.unit.innerCap)} flat`
+          ? q.shopBlog
+            ? `${kind === "shop" ? "Shop" : "Blog"} — capped at ${fmt(q.unit.shopCap)}, however many you add`
+            : `${p.innerCapAfter + 1}+ inner pages are capped at ${fmt(q.unit.innerCap)} flat`
           : q.inner
-            ? `${q.inner} × ${fmt(q.unit.inner)}`
-            : `${fmt(q.unit.inner)} each — blog posts, products, portfolio items`;
+            ? `${q.inner} × ${fmt(q.unit.inner)}${q.shopBlog ? ` (max ${fmt(q.unit.shopCap)})` : ""}`
+            : `${fmt(q.unit.inner)} each${q.shopBlog ? ` — max ${fmt(q.unit.shopCap)} in total` : " — blog posts, products, portfolio items"}`;
         lines.innerHTML =
           row(`Main pages <b>× ${q.main}</b>`, mainDetail, fmt(q.mainCost)) +
-          row(`Inner pages <b>× ${q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
-          row("Total", "Main pages + inner pages", fmt(q.total), "b-total");
+          row(`${innerName} <b>× ${q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
+          row("Total", `Main pages + ${innerName.toLowerCase()}`, fmt(q.total), "b-total");
 
         // One friendly line explaining the caps (savings first, then what's next)
         const saved = (q.capped ? q.uncapped - q.mainCost : 0) + (q.innerCapped ? q.innerUncapped - q.innerCost : 0);
@@ -247,9 +274,11 @@
             ? `You've reached a cap — more of those pages won't cost extra.`
             : q.main === p.largeAfter
               ? `From ${p.largeAfter + 1} main pages, the price is capped at ${fmt(q.unit.cap)}.`
-              : p.innerCapAfter && q.inner === p.innerCapAfter
-                ? `From ${p.innerCapAfter + 1} inner pages, they're capped at ${fmt(q.unit.innerCap)}.`
-                : `Main pages cap at ${fmt(q.unit.cap)} (${p.largeAfter + 1}+ pages). Inner pages cap at ${fmt(q.unit.innerCap)} (${p.innerCapAfter + 1}+ pages).`;
+              : q.shopBlog
+                ? `${kind === "shop" ? "Shops" : "Blogs"}: ${innerName.toLowerCase()} never cost more than ${fmt(q.unit.shopCap)} in total.`
+                : p.innerCapAfter && q.inner === p.innerCapAfter
+                  ? `From ${p.innerCapAfter + 1} inner pages, they're capped at ${fmt(q.unit.innerCap)}.`
+                  : `Main pages cap at ${fmt(q.unit.cap)} (${p.largeAfter + 1}+ pages). Inner pages cap at ${fmt(q.unit.innerCap)} (${p.innerCapAfter + 1}+ pages).`;
 
         calc.classList.toggle("is-capped", q.capped || q.innerCapped);
         fillBar(mainR); fillBar(innerR);

@@ -22,7 +22,7 @@ window.DEFAULT_CONTENT = {
       { "value": "100%", "label": "Custom design — no templates" },
       { "value": "24h", "label": "Reply time" },
       { "value": "1 week", "label": "To launch a homepage" },
-      { "value": "7+", "label": "Main pages capped in price" }
+      { "value": "100%", "label": "Mobile-friendly" }
     ],
     "showClients": false,
     "clients": ["Add your first client here"],
@@ -72,7 +72,8 @@ window.DEFAULT_CONTENT = {
       "largePrice": 1000,
       "innerPage": 25,
       "innerCapAfter": 30,
-      "innerCap": 750
+      "innerCap": 750,
+      "shopBlogInnerCap": 100
     },
     "packages": [
       { "id": "pk1", "name": "Single page", "amount": 100, "from": false, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
@@ -94,7 +95,8 @@ window.DEFAULT_CONTENT = {
       { "id": "f4", "q": "What do you need from me?", "a": "Your logo (if you have one), some photos and a few words about your business. I can help with the rest." },
       { "id": "f5", "q": "How does payment work?", "a": "50% to start, 50% at launch. For larger projects we can split it into more parts." },
       { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in US dollars) at today's exchange rate. The final quote is confirmed after the brief." },
-      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at $1,000 from 7 pages; inner pages are $25 each, capped at $750 once you have more than 30." }
+      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at $1,000 from 7 pages; inner pages are $25 each, capped at $750 once you have more than 30." },
+      { "id": "f8", "q": "I want an online shop or a blog — do I pay for every product or post?", "a": "No. For shops and blogs, all your products or posts together never cost more than $100 — add as many as you like. You only pay normally for the main pages." }
     ]
   },
   "about": {
