@@ -281,6 +281,10 @@ main { min-height: 60vh; }
 .calc-kinds button { background: none; border: 1px solid var(--line-2); color: var(--muted); border-radius: 999px; padding: 7px 14px; font: 400 .86rem var(--body); cursor: pointer; transition: .25s var(--ease); }
 .calc-kinds button:hover { color: var(--text); border-color: var(--muted); }
 .calc-kinds button.on { background: var(--text); border-color: var(--text); color: var(--bg); }
+/* Shops & blogs: products/posts are unlimited for a flat fee → grey out the counter */
+.calc.is-unlimited .calc-input:last-child input { opacity: .25; pointer-events: none; }
+.calc.is-unlimited .calc-number { display: none; }
+.calc.is-unlimited .calc-input:last-child .calc-label::after { content: "Unlimited"; font: 500 1.1rem var(--display); color: var(--accent); }
 .calc-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 48px; margin-top: 8px; }
 .calc-input { display: grid; gap: 10px; align-content: start; }
 .calc-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; }

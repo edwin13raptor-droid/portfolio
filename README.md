@@ -74,8 +74,8 @@ Set in the admin panel → **Services**. Amounts are in your own currency (defau
 | 1 – 30 | $25 each |
 | 31+ | capped at $750 flat |
 
-**Shops & blogs** — products / blog posts are $25 each but **never more than $100 in total**.
+**Shops & blogs** — **unlimited** products / blog posts for **one flat +$50**.
 
-**Total = main pages cost (max $1,000) + inner pages cost (max $750, or max $100 for shops & blogs).**
+**Total = main pages cost (max $1,000) + inner pages cost (max $750, or a flat $50 for shops & blogs).**
 
 Prices only appear on the Services page (not the homepage). The calculator there has a "Type of site" choice (business / shop / blog), a slider for each kind of page, and a line-by-line breakdown. Visitors see prices converted to their own currency (detected from their region on Vercel, or their browser language), with a currency picker to switch. Converted unit prices are rounded first, so the breakdown always adds up exactly.

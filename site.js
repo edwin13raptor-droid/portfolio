@@ -88,7 +88,7 @@
        7+ pages      → capped at largePrice            ($1,000 flat)
      Inner pages (templated: blog posts, products, portfolio items):
        business site → innerPage × m, max innerCap      ($25 each, max $750 from 31 pages)
-       shop or blog  → innerPage × m, max shopBlogCap   ($25 each, max $100 — products/posts barely count)
+       shop or blog  → one flat shopBlogFlat            ($50 for unlimited products / posts)
      Total = main pages cost + inner pages cost
      Everything is calculated from converted unit prices, so each breakdown line adds up exactly. */
   function quote(mainPages, innerPages, p, kind = "business") {
@@ -97,14 +97,15 @@
     const shopBlog = kind === "shop" || kind === "blog";
     const unit = {
       home: conv(p.homePage), page: conv(p.extraPage), cap: conv(p.largePrice),
-      inner: conv(p.innerPage), innerCap: conv(p.innerCap), shopCap: conv(p.shopBlogInnerCap),
+      inner: conv(p.innerPage), innerCap: conv(p.innerCap), shopFlat: conv(p.shopBlogFlat),
     };
     const uncapped = unit.home + (main - 1) * unit.page;
     const capped = main > p.largeAfter;
     const mainCost = capped ? unit.cap : uncapped;
-    const innerUncapped = inner * unit.inner;
-    const innerLimit = shopBlog && p.shopBlogInnerCap ? unit.shopCap : p.innerCapAfter > 0 ? unit.innerCap : Infinity;
-    const innerCapped = innerUncapped > innerLimit;
+    // Shops & blogs: unlimited products/posts for one flat fee (the count doesn't matter)
+    const innerUncapped = shopBlog ? unit.shopFlat : inner * unit.inner;
+    const innerLimit = !shopBlog && p.innerCapAfter > 0 ? unit.innerCap : Infinity;
+    const innerCapped = !shopBlog && innerUncapped > innerLimit;
     const innerCost = innerCapped ? innerLimit : innerUncapped;
     return { main, inner, unit, shopBlog, kind, capped, uncapped, mainCost, innerCapped, innerUncapped, innerLimit, innerCost, total: mainCost + innerCost };
   }
@@ -117,7 +118,7 @@
       .replace(/\{large\}/g, money(p.largePrice))
       .replace(/\{innerCapAfter\}/g, String(p.innerCapAfter))
       .replace(/\{innerCap\}/g, money(p.innerCap))
-      .replace(/\{shopCap\}/g, money(p.shopBlogInnerCap))
+      .replace(/\{shopFlat\}/g, money(p.shopBlogFlat))
       .replace(/\{inner\}/g, money(p.innerPage))
       .replace(/\{largeAfterPlus\}/g, String(p.largeAfter + 1))
       .replace(/\{largeAfter\}/g, String(p.largeAfter));
@@ -133,7 +134,7 @@
       innerPage: Number(p.innerPage) || 0,
       innerCapAfter: Number(p.innerCapAfter) || 0, // 0 = no cap
       innerCap: Number(p.innerCap) || 0,
-      shopBlogInnerCap: Number(p.shopBlogInnerCap) || 0,
+      shopBlogFlat: Number(p.shopBlogFlat) || 0,
     };
   }
 
@@ -208,7 +209,7 @@
         const k = el.dataset.unit;
         el.textContent = {
           inner: fmt(conv(p.innerPage)), cap: fmt(conv(p.largePrice)), after: String(p.largeAfter + 1),
-          innerCap: fmt(conv(p.innerCap)), innerAfter: String(p.innerCapAfter + 1), shopCap: fmt(conv(p.shopBlogInnerCap)),
+          innerCap: fmt(conv(p.innerCap)), innerAfter: String(p.innerCapAfter + 1), shopFlat: fmt(conv(p.shopBlogFlat)),
         }[k] ?? "";
       });
       // Type of site: business / shop / blog (kept on the element so it survives currency changes)
@@ -246,24 +247,27 @@
         if (innerLabel) innerLabel.textContent = innerName;
         const innerSub = calc.querySelector(".calc-inner-sub");
         if (innerSub) innerSub.textContent = q.shopBlog
-          ? `${innerName} are ${fmt(q.unit.inner)} each, but never more than ${fmt(q.unit.shopCap)} in total — add as many as you like.`
+          ? `Unlimited ${innerName.toLowerCase()} for one flat ${fmt(q.unit.shopFlat)} — add as many as you like, the price never changes.`
           : `Template pages — blog posts, products, portfolio items. ${fmt(q.unit.inner)} each, capped at ${fmt(q.unit.innerCap)} from ${p.innerCapAfter + 1} pages.`;
+        // For shops/blogs the count doesn't change the price → show "Unlimited" instead of a slider
+        calc.classList.toggle("is-unlimited", q.shopBlog);
+        innerR.disabled = innerN.disabled = q.shopBlog;
 
         const mainDetail = q.capped
           ? `${p.largeAfter + 1}+ main pages are capped at ${fmt(q.unit.cap)} flat`
           : q.main === 1
             ? `Homepage — ${fmt(q.unit.home)}`
             : `Homepage ${fmt(q.unit.home)} + ${q.main - 1} × ${fmt(q.unit.page)}`;
-        const innerDetail = q.innerCapped
-          ? q.shopBlog
-            ? `${kind === "shop" ? "Shop" : "Blog"} — capped at ${fmt(q.unit.shopCap)}, however many you add`
-            : `${p.innerCapAfter + 1}+ inner pages are capped at ${fmt(q.unit.innerCap)} flat`
-          : q.inner
-            ? `${q.inner} × ${fmt(q.unit.inner)}${q.shopBlog ? ` (max ${fmt(q.unit.shopCap)})` : ""}`
-            : `${fmt(q.unit.inner)} each${q.shopBlog ? ` — max ${fmt(q.unit.shopCap)} in total` : " — blog posts, products, portfolio items"}`;
+        const innerDetail = q.shopBlog
+          ? `Unlimited ${innerName.toLowerCase()} — one flat fee`
+          : q.innerCapped
+            ? `${p.innerCapAfter + 1}+ inner pages are capped at ${fmt(q.unit.innerCap)} flat`
+            : q.inner
+              ? `${q.inner} × ${fmt(q.unit.inner)}`
+              : `${fmt(q.unit.inner)} each — blog posts, products, portfolio items`;
         lines.innerHTML =
           row(`Main pages <b>× ${q.main}</b>`, mainDetail, fmt(q.mainCost)) +
-          row(`${innerName} <b>× ${q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
+          row(`${innerName} <b>${q.shopBlog ? "∞" : "× " + q.inner}</b>`, innerDetail, fmt(q.innerCost)) +
           row("Total", `Main pages + ${innerName.toLowerCase()}`, fmt(q.total), "b-total");
 
         // One friendly line explaining the caps (savings first, then what's next)
@@ -275,7 +279,7 @@
             : q.main === p.largeAfter
               ? `From ${p.largeAfter + 1} main pages, the price is capped at ${fmt(q.unit.cap)}.`
               : q.shopBlog
-                ? `${kind === "shop" ? "Shops" : "Blogs"}: ${innerName.toLowerCase()} never cost more than ${fmt(q.unit.shopCap)} in total.`
+                ? `${kind === "shop" ? "Shops" : "Blogs"} get unlimited ${innerName.toLowerCase()} for one flat ${fmt(q.unit.shopFlat)}.`
                 : p.innerCapAfter && q.inner === p.innerCapAfter
                   ? `From ${p.innerCapAfter + 1} inner pages, they're capped at ${fmt(q.unit.innerCap)}.`
                   : `Main pages cap at ${fmt(q.unit.cap)} (${p.largeAfter + 1}+ pages). Inner pages cap at ${fmt(q.unit.innerCap)} (${p.innerCapAfter + 1}+ pages).`;
