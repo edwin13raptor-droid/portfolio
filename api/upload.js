@@ -1,7 +1,7 @@
 // POST /api/upload?filename=photo.jpg  (raw image bytes as the body, admin only)
 // → { url } of the image stored in Vercel Blob.
 import { put } from "@vercel/blob";
-import { requireAdmin } from "./_lib/session.js";
+import { blobError, requireAdmin } from "./_lib/session.js";
 
 const MAX_BYTES = 4 * 1024 * 1024; // Vercel functions accept ~4.5 MB bodies; the admin panel resizes images first
 const TYPES = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" };
@@ -49,6 +49,6 @@ export default async function handler(req, res) {
   } catch (err) {
     if (err.status === 413) return res.status(413).json({ error: "Image is too large (max 4 MB)." });
     console.error(err);
-    return res.status(500).json({ error: "Upload failed." });
+    return res.status(500).json({ error: blobError("Upload failed", err) });
   }
 }

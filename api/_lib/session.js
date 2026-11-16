@@ -64,6 +64,17 @@ export function requireAdmin(req, res) {
   return false;
 }
 
+// Readable error for the admin panel (only logged-in admins ever see it)
+export function blobError(prefix, err) {
+  const msg = String(err?.message || err || "unknown error").replace(/\s+/g, " ").slice(0, 220);
+  const hint = /private/i.test(msg)
+    ? " — your Blob store is private. Create a new Blob store set to Public and connect it to this project."
+    : /token|unauthori[sz]ed|forbidden|access denied/i.test(msg)
+    ? " — the storage key looks wrong. Reconnect the Blob store to this project and redeploy."
+    : "";
+  return `${prefix}: ${msg}${hint}`;
+}
+
 export function readJson(req) {
   if (req.body && typeof req.body === "object") return req.body;
   if (typeof req.body === "string") { try { return JSON.parse(req.body); } catch { return {}; } }

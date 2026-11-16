@@ -2,7 +2,7 @@
 //   GET → { content } saved from the admin panel, or { content: null } (site then uses content.json)
 //   PUT { content } → saves a new version (admin only). Keeps the last 20 versions in Vercel Blob.
 import { del, list, put } from "@vercel/blob";
-import { readJson, requireAdmin } from "./_lib/session.js";
+import { blobError, readJson, requireAdmin } from "./_lib/session.js";
 
 const PREFIX = "cms/content-";
 const KEEP = 20;
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, savedAt: saved.uploadedAt || new Date().toISOString() });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ error: "Couldn't save. Try again." });
+      return res.status(500).json({ error: blobError("Couldn't save", err) });
     }
   }
 
