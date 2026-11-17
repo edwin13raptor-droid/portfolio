@@ -24,6 +24,7 @@ const LABELS = {
     audience: "Target customers",
     unique: "What makes them different",
     project_type: "Project type",
+    plan: "Chosen plan",
     current_website: "Current website",
     goals: "Goals",
     has_domain: "Has a domain?",
@@ -53,7 +54,7 @@ const LABELS = {
 const SECTIONS = [
   ["Client", ["name", "email", "phone", "location", "contact_method"]],
   ["Business", ["business_name", "business_description", "audience", "unique"]],
-  ["Project", ["project_type", "current_website", "goals"]],
+  ["Project", ["project_type", "plan", "current_website", "goals"]],
   ["Domain & hosting", ["has_domain", "domain_name", "domain_registrar", "domain_access", "domain_ideas", "domain_email"]],
   ["Pages & features", ["pages", "features"]],
   ["Content & style", ["logo", "texts", "photos", "style", "brand_colors", "inspiration", "competitors"]],
@@ -107,7 +108,7 @@ function buildIntakeEmail(d) {
   const file = `brief-${slug(d.business_name)}.json`;
   const html = `<div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111">
     <h2 style="margin:0 0 4px">🚀 New project brief</h2>
-    <p style="margin:0;color:#666">${escapeHtml(d.business_name)} — ${escapeHtml(d.project_type || "")} — budget ${escapeHtml(d.budget || "?")}</p>
+    <p style="margin:0;color:#666">${escapeHtml(d.business_name)} — ${escapeHtml(d.project_type || "")}${d.plan ? ` — plan: <strong>${escapeHtml(d.plan)}</strong>` : ""} — budget ${escapeHtml(d.budget || "?")}</p>
     <p style="margin:18px 0 0;padding:12px 14px;background:#f2ffd6;border-radius:8px;font-size:14px">
       📎 <strong>${escapeHtml(file)}</strong> is attached. To start the site: press <strong>+</strong> on the Websites group in Claude,
       drop the file in and say “build this client's website”.
@@ -149,7 +150,7 @@ function buildBriefJson(d) {
     },
     client: { name: v("name"), email: v("email"), phone: v("phone"), location: v("location"), preferredContact: v("contact_method") },
     business: { name: v("business_name"), description: v("business_description"), customers: v("audience"), whatMakesThemDifferent: v("unique") },
-    project: { type: v("project_type"), currentWebsite: v("current_website"), goals: v("goals") },
+    project: { type: v("project_type"), plan: v("plan"), currentWebsite: v("current_website"), goals: v("goals") },
     domain: { hasDomain: v("has_domain"), domain: v("domain_name"), registrar: v("domain_registrar"), hasRegistrarLogin: v("domain_access"), domainIdeas: v("domain_ideas"), emailOnDomain: v("domain_email") },
     site: { pages: v("pages"), features: v("features") },
     content: { logo: v("logo"), text: v("texts"), photos: v("photos") },

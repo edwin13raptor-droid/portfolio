@@ -189,7 +189,7 @@
         <p class="price">${pk.from ? '<small>from</small> ' : ""}${money(pk.amount ?? 0, p)}</p>
         <p class="package-text">${fill(pk.text, p)}</p>
         <ul>${(pk.features || []).map((f) => `<li>${fill(f, p)}</li>`).join("")}</ul>
-        <a href="start.html" class="btn ${pk.featured ? "" : "btn-ghost"} btn-full">Get started</a>
+        <a href="start.html?plan=${encodeURIComponent(pk.name || "")}" class="btn ${pk.featured ? "" : "btn-ghost"} btn-full">Get started</a>
       </article>`);
 
     // Currency picker + note
@@ -305,6 +305,21 @@
       };
       mainR.oninput = innerR.oninput = innerN.oninput = update;
       update();
+    }
+
+    // Project form: "Which plan fits best?" — built from your plans, so a plan you add in
+    // the admin panel shows up here too. Pre-selected when coming from a plan's "Get started".
+    const planBox = document.getElementById("plan-choices");
+    if (planBox) {
+      const current = planBox.querySelector("input:checked")?.dataset.plan
+        ?? new URLSearchParams(location.search).get("plan") ?? "";
+      const plans = (c.services?.packages || []).filter((pk) => pk.name);
+      const opt = (name, label) =>
+        `<label class="choice"><input type="radio" name="plan" value="${esc(label)}" data-plan="${esc(name)}"${name === current ? " checked" : ""} /><span>${esc(label)}</span></label>`;
+      planBox.innerHTML = plans.map((pk) => {
+        const price = `${pk.from ? "from " : ""}${money(pk.amount ?? 0, p)}`;
+        return opt(pk.name, `${pk.name} · ${price}`);
+      }).join("") + opt("Help me choose", "Help me choose");
     }
 
     // Intake form budget options (data-budget="from-to" in base currency)
@@ -561,7 +576,7 @@
 
   window.Site = { content: first, render, rich, esc, merge, fx };
 
-  const needsPrices = () => document.querySelector("#packages, #price-calc, input[data-budget]");
+  const needsPrices = () => document.querySelector("#packages, #price-calc, input[data-budget], #plan-choices");
   const ratesFresh = needsPrices() ? currencyNow(pricingOf(first).currency) : true;
 
   // Render as soon as every script on the page has loaded (motion.js etc. listen for it)
