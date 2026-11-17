@@ -10,7 +10,8 @@
   document.documentElement.classList.add("motion");
 
   // ---------- 1. Split headings into masked words ----------
-  const SPLIT = ".hero h1, .page-hero h1, .section-head h2, .statement, .col-title, .faq-side h2, .intake-head h1";
+  // (the homepage statement uses the scroll-lit effect below instead)
+  const SPLIT = ".hero h1, .page-hero h1, .section-head h2, .col-title, .faq-side h2, .intake-head h1";
   let wordIndex = 0;
 
   function splitNode(node, out) {
@@ -104,12 +105,46 @@
   bar.className = "scroll-progress";
   document.body.append(bar);
 
+  // ---------- Scroll-lit text: words go from dim to bright as you scroll ----------
+  // Any element with [data-lit]. Its words are wrapped once per render (keeping <em>, <br>
+  // and paragraphs), then the scroll handler lights up the right number of words.
+  function wrapWords(node) {
+    if (node.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      node.textContent.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) return frag.append(document.createTextNode(part));
+        const s = document.createElement("span");
+        s.className = "lw";
+        s.textContent = part;
+        frag.append(s);
+      });
+      node.replaceWith(frag);
+    } else if (node.nodeType === 1 && !node.classList.contains("lw")) {
+      [...node.childNodes].forEach(wrapWords);
+    }
+  }
+  let litEls = [];
+  function prepareLit() {
+    litEls = [...document.querySelectorAll("[data-lit]")].map((el) => {
+      if (el.dataset.litSig !== el.innerHTML) {
+        [...el.childNodes].forEach(wrapWords);
+        el.classList.add("lit");
+        el.dataset.litSig = el.innerHTML;
+      }
+      const words = [...el.querySelectorAll(".lw")];
+      const lit = words.findIndex((w) => !w.classList.contains("on"));
+      return { el, words, shown: lit === -1 ? words.length : lit };
+    });
+  }
+
   // One read pass, then one write pass per frame (no layout thrashing); the list of
   // parallax covers is collected once per render instead of on every scroll.
   let ticking = false, mocks = [], heroTitle = null, maxScroll = 0;
   const collect = () => {
     mocks = [...document.querySelectorAll(".thumb .mock")];
     heroTitle = document.querySelector(".hero h1");
+    prepareLit();
     maxScroll = document.documentElement.scrollHeight - innerHeight;
   };
   function onScroll() {
@@ -122,8 +157,26 @@
         const r = m.parentElement.getBoundingClientRect();
         return r.bottom < 0 || r.top > vh ? null : (r.top + r.height / 2 - vh / 2) / vh; // -1..1
       });
+      // how many words of each lit block should be bright: starts as the block enters the
+      // lower part of the screen, finishes as it reaches the upper third; at the very
+      // bottom of the page everything is lit so no text is left dim
+      const atBottom = maxScroll > 0 && y >= maxScroll - 4;
+      const litCounts = litEls.map(({ el, words }) => {
+        const r = el.getBoundingClientRect();
+        if (r.top > vh || r.bottom < -vh) return null;
+        const p = atBottom ? 1 : Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.35)));
+        return Math.round(p * words.length);
+      });
       bar.style.transform = `scaleX(${maxScroll > 0 ? Math.min(1, y / maxScroll) : 0})`;
       offsets.forEach((o, i) => { if (o !== null) mocks[i].style.translate = `0 ${(o * 26).toFixed(1)}px`; });
+      litCounts.forEach((n, i) => {
+        const L = litEls[i];
+        if (n === null || n === L.shown) return;
+        // only touch the words whose state changes
+        const from = Math.min(n, Math.max(L.shown, 0)), to = Math.max(n, Math.max(L.shown, 0));
+        for (let k = from; k < to; k++) L.words[k]?.classList.toggle("on", k < n);
+        L.shown = n;
+      });
       if (heroTitle && y < vh) heroTitle.style.translate = `0 ${(y * 0.18).toFixed(1)}px`;
     });
   }

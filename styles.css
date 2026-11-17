@@ -746,6 +746,11 @@ body.adm-open .to-top { display: none; }
 .motion.intro .hero .lead, .motion.intro .page-hero .lead { opacity: 1; transform: none; transition-delay: .7s; }
 .motion.intro .hero .hero-cta, .motion.intro .page-hero .big-count { opacity: 1; transform: none; transition-delay: .85s; }
 
+/* Scroll-lit text: words brighten one by one as you scroll (motion.js) */
+.lit .lw { opacity: .2; transition: opacity .35s ease; }
+.lit .lw.on { opacity: 1; }
+.about-body.lit p { color: var(--text); } /* body text goes fully white when lit, dim when not */
+
 /* Scroll progress line */
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; background: var(--accent); transform: scaleX(0); transform-origin: left; pointer-events: none; }
 
