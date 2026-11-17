@@ -69,9 +69,16 @@
       }
       ctx.globalAlpha = 1;
     }
+    // Phones: the "light" wanders on its own, so it would redraw every frame — 30 fps is plenty
+    // there. Nothing is drawn while the menu is open or the hero is off screen.
+    let lastFrame = 0;
+    const minGap = fine ? 0 : 33;
     function loop(now) {
       t = now;
-      if (visible && !document.hidden) draw(false);
+      if (visible && !document.hidden && !document.body.classList.contains("menu-open") && now - lastFrame >= minGap) {
+        lastFrame = now;
+        draw(false);
+      }
       requestAnimationFrame(loop);
     }
     hero.addEventListener("pointermove", (e) => {

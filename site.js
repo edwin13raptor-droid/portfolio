@@ -350,11 +350,21 @@
       </nav>`;
     const toggle = el.querySelector(".nav-toggle");
     const links = el.querySelector(".nav-links");
-    toggle.onclick = () => {
-      const open = links.classList.toggle("open");
+    const setOpen = (open) => {
+      links.classList.toggle("open", open);
       toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       document.body.classList.toggle("menu-open", open);
     };
+    toggle.onclick = () => setOpen(!links.classList.contains("open"));
+    // keep the menu as it was if the header is redrawn (e.g. after content refreshes)
+    if (document.body.classList.contains("menu-open")) setOpen(true);
+    if (!window.__menuEsc) {
+      window.__menuEsc = true;
+      addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && document.body.classList.contains("menu-open")) document.querySelector(".nav-toggle")?.click();
+      });
+    }
   }
 
   // Small "copy" button — script.js handles the click (copies + shows "Copied")

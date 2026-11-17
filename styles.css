@@ -57,6 +57,8 @@ body.menu-open { overflow: hidden; }
 body.menu-open .nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
 ::selection { background: var(--accent); color: #0a0a0a; }
 a { color: inherit; text-decoration: none; }
+/* Taps fire right away on phones (no double-tap-to-zoom delay, no grey flash) */
+a, button, summary, label, input, select, textarea, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 a.link { border-bottom: 1px solid var(--line-2); transition: border-color .2s, color .2s; }
 a.link:hover { border-color: var(--accent); color: var(--text); }
 ul, ol { list-style: none; }
@@ -689,8 +691,13 @@ input:focus-visible, textarea:focus-visible, .cselect-btn:focus-visible { outlin
   transition: opacity .35s var(--ease), transform .35s var(--ease), background .25s, color .25s;
 }
 .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
-.to-top:hover { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
-.to-top:hover span { animation: nudge .6s var(--ease); }
+/* Hover effects only for mouse devices — on phones a hover style makes the first tap
+   only "hover", so buttons needed two taps */
+@media (hover: hover) {
+  .to-top:hover { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+  .to-top:hover span { animation: nudge .6s var(--ease); }
+}
+.to-top:active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
 @keyframes nudge { 50% { transform: translateY(-3px); } }
 body.adm-open .to-top { display: none; }
 @media (max-width: 760px) { .to-top { right: 14px; bottom: 14px; width: 42px; height: 42px; } }
@@ -808,14 +815,22 @@ body.adm-open .to-top { display: none; }
   .calc { padding: 24px 18px; }
   .calc-inputs { grid-template-columns: 1fr; }
   .calc-hint { text-align: left; }
-  .nav { min-height: 64px; padding-top: 12px; padding-bottom: 12px; }
+  /* Phones: a solid header instead of a live blur. The blur had to be switched off every time
+     the menu opened, which made the menu stick and then jump in. */
+  .nav, body.menu-open .nav { min-height: 64px; padding-top: 12px; padding-bottom: 12px; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(10, 10, 10, .94); }
   .nav-toggle { display: block; z-index: 2; }
   .nav-links {
     position: fixed; inset: 0; z-index: 1; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px;
     background: var(--bg); padding: 80px 16px 40px;
-    opacity: 0; pointer-events: none; transition: opacity .35s var(--ease);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .2s ease, visibility 0s linear .2s;
+    will-change: opacity; contain: layout paint;
   }
-  .nav-links.open { opacity: 1; pointer-events: auto; }
+  .nav-links.open { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .2s ease, visibility 0s; }
+  .nav-links li { opacity: 0; transform: translateY(12px); transition: opacity .25s ease, transform .3s var(--ease); }
+  .nav-links.open li { opacity: 1; transform: none; }
+  .nav-links.open li:nth-child(2) { transition-delay: .03s; } .nav-links.open li:nth-child(3) { transition-delay: .06s; }
+  .nav-links.open li:nth-child(4) { transition-delay: .09s; } .nav-links.open li:nth-child(5) { transition-delay: .12s; }
   .nav-links a:not(.btn) { font: 500 2.6rem var(--display); letter-spacing: -0.04em; color: var(--text); padding: 4px 0; background: none !important; }
   .nav-links a.active { color: var(--accent); }
   .nav-links .btn { margin: 28px 0 0; }
