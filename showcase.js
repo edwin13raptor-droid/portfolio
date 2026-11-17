@@ -12,60 +12,79 @@
     const ctx = canvas.getContext("2d");
     const hero = canvas.closest(".hero");
     const bg = canvas.parentElement; // full-width background layer
-    let w = 0, h = 0, dpr = 1, dots = [], visible = true, t = 0;
+    // Performance: the faint grid is drawn ONCE into an off-screen image. Each frame only
+    // copies that image and redraws the handful of dots near the light — and frames where
+    // nothing moved are skipped entirely.
+    let w = 0, h = 0, dpr = 1, cols = 0, rows = 0, visible = true, t = 0;
+    let base = null, col = "#d4ff5a", lastX = NaN, lastY = NaN, dirty = true;
     const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
     const GAP = 30;
 
-    const accent = () => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d4ff5a";
+    const readAccent = () => { col = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d4ff5a"; dirty = true; };
     function resize() {
-      dpr = Math.min(devicePixelRatio || 1, 2);
+      dpr = Math.min(devicePixelRatio || 1, 1.5);
       w = bg.clientWidth; h = bg.clientHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
       canvas.style.width = w + "px"; canvas.style.height = h + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      dots = [];
-      for (let y = GAP / 2; y < h; y += GAP) for (let x = GAP / 2; x < w; x += GAP) dots.push({ x, y });
-      if (reduce) draw();
+      cols = Math.ceil((w - GAP / 2) / GAP); rows = Math.ceil((h - GAP / 2) / GAP);
+      // pre-render the faint grid
+      base = document.createElement("canvas");
+      base.width = canvas.width; base.height = canvas.height;
+      const b = base.getContext("2d");
+      b.setTransform(dpr, 0, 0, dpr, 0, 0);
+      b.fillStyle = "rgba(255,255,255,.11)";
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        b.beginPath(); b.arc(GAP / 2 + c * GAP, GAP / 2 + r * GAP, 0.8, 0, Math.PI * 2); b.fill();
+      }
+      dirty = true;
+      draw(true);
     }
-    function draw() {
-      ctx.clearRect(0, 0, w, h);
-      const col = accent();
-      mouse.x += (mouse.tx - mouse.x) * 0.12;
-      mouse.y += (mouse.ty - mouse.y) * 0.12;
+    function draw(force) {
+      mouse.x += (mouse.tx - mouse.x) * 0.14;
+      mouse.y += (mouse.ty - mouse.y) * 0.14;
       // without a mouse (phones), a slow wandering "light" moves across the grid
       const lx = fine && mouse.tx > -9000 ? mouse.x : w * (0.5 + 0.35 * Math.sin(t / 2600));
       const ly = fine && mouse.ty > -9000 ? mouse.y : h * (0.45 + 0.25 * Math.cos(t / 3100));
+      if (!force && !dirty && Math.abs(lx - lastX) < 0.3 && Math.abs(ly - lastY) < 0.3) return; // nothing moved
+      lastX = lx; lastY = ly; dirty = false;
+      ctx.clearRect(0, 0, w, h);
+      if (base) ctx.drawImage(base, 0, 0, w, h);
       const R = Math.min(220, w * 0.35);
-      for (const d of dots) {
-        const dx = d.x - lx, dy = d.y - ly;
+      // only the grid cells inside the light's radius
+      const c0 = Math.max(0, Math.floor((lx - R) / GAP)), c1 = Math.min(cols - 1, Math.ceil((lx + R) / GAP));
+      const r0 = Math.max(0, Math.floor((ly - R) / GAP)), r1 = Math.min(rows - 1, Math.ceil((ly + R) / GAP));
+      ctx.fillStyle = col;
+      for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+        const dx0 = GAP / 2 + c * GAP, dy0 = GAP / 2 + r * GAP;
+        const dx = dx0 - lx, dy = dy0 - ly;
         const dist = Math.hypot(dx, dy);
-        const f = Math.max(0, 1 - dist / R);
-        const wave = reduce ? 0 : Math.sin(d.x * 0.012 + d.y * 0.01 + t / 900) * 0.5 + 0.5;
+        const f = 1 - dist / R;
+        if (f <= 0.02) continue;
         const push = f * f * 16;
-        const x = d.x + (dist ? (dx / dist) * push : 0);
-        const y = d.y + (dist ? (dy / dist) * push : 0);
-        const r = 0.8 + f * 2.2;
-        ctx.globalAlpha = 0.08 + wave * 0.06 + f * 0.85;
-        ctx.fillStyle = f > 0.02 ? col : "#ffffff";
+        ctx.globalAlpha = f * 0.9;
         ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.arc(dx0 + (dist ? (dx / dist) * push : 0), dy0 + (dist ? (dy / dist) * push : 0), 0.8 + f * 2.2, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.globalAlpha = 1;
     }
     function loop(now) {
       t = now;
-      if (visible) draw();
+      if (visible && !document.hidden) draw(false);
       requestAnimationFrame(loop);
     }
     hero.addEventListener("pointermove", (e) => {
       const r = bg.getBoundingClientRect();
       mouse.tx = e.clientX - r.left; mouse.ty = e.clientY - r.top;
       if (mouse.x < -9000) { mouse.x = mouse.tx; mouse.y = mouse.ty; }
-    });
+    }, { passive: true });
     hero.addEventListener("pointerleave", () => { mouse.tx = mouse.ty = -9999; mouse.x = mouse.y = -9999; });
     new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(hero);
-    addEventListener("resize", resize);
+    let rt;
+    addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(resize, 150); });
+    document.addEventListener("site:rendered", readAccent); // accent colour can change in the admin
+    readAccent();
     resize();
     if (!reduce) requestAnimationFrame(loop);
   }
@@ -73,17 +92,24 @@
   // ---------- 2. Word band: speeds up and flips with scrolling ----------
   const track = document.querySelector(".band-track");
   if (track && !reduce) {
-    let x = 0, last = scrollY, velocity = 0, dir = -1;
+    // Only animates while the band is on screen; its width is measured once (not every frame)
+    let x = 0, last = scrollY, velocity = 0, dir = -1, onScreen = false, half = 0;
+    const measure = () => (half = track.scrollWidth / 2);
+    new IntersectionObserver(([e]) => (onScreen = e.isIntersecting)).observe(track.parentElement);
+    document.addEventListener("site:rendered", measure);
+    addEventListener("resize", measure);
+    measure();
     (function tick() {
       const now = scrollY;
       const delta = now - last;
       last = now;
-      if (Math.abs(delta) > 0.5) dir = delta > 0 ? -1 : 1;
-      velocity += (Math.min(Math.abs(delta), 60) - velocity) * 0.1;
-      x += dir * (0.6 + velocity * 0.35);
-      const half = track.scrollWidth / 2;
-      if (half > 0) { if (x <= -half) x += half; if (x > 0) x -= half; }
-      track.style.transform = `translate3d(${x}px,0,0) skewX(${(-dir * velocity * 0.25).toFixed(2)}deg)`;
+      if (onScreen && !document.hidden) {
+        if (Math.abs(delta) > 0.5) dir = delta > 0 ? -1 : 1;
+        velocity += (Math.min(Math.abs(delta), 60) - velocity) * 0.1;
+        x += dir * (0.6 + velocity * 0.35);
+        if (half > 0) { if (x <= -half) x += half; if (x > 0) x -= half; }
+        track.style.transform = `translate3d(${x.toFixed(1)}px,0,0) skewX(${(-dir * velocity * 0.25).toFixed(2)}deg)`;
+      }
       requestAnimationFrame(tick);
     })();
   }
@@ -142,24 +168,33 @@
 
   // ---------- 4. Spotlight + 3D tilt ----------
   const SPOT = ".teaser, .package, .calc, .quote, .service-row, .value, .brief-card, .contact-form, .pg-controls, .form-card";
-  addEventListener("pointermove", (e) => {
+  // Mouse events can fire several times per frame — only handle the latest one, once per frame
+  let pending = null, scheduled = false, tilted = null;
+  function handlePointer() {
+    scheduled = false;
+    const e = pending;
     const el = e.target.closest?.(SPOT);
     if (el) {
       const r = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+      el.style.setProperty("--mx", `${(e.clientX - r.left).toFixed(0)}px`);
+      el.style.setProperty("--my", `${(e.clientY - r.top).toFixed(0)}px`);
       el.classList.add("spot");
     }
     const thumb = e.target.closest?.(".thumb");
-    document.querySelectorAll(".thumb.tilting").forEach((t) => { if (t !== thumb) { t.classList.remove("tilting"); t.style.transform = ""; } });
+    if (tilted && tilted !== thumb) { tilted.classList.remove("tilting"); tilted.style.transform = ""; tilted = null; }
     if (thumb) {
       const r = thumb.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
+      tilted = thumb;
       thumb.classList.add("tilting");
       thumb.style.transform = `perspective(1000px) rotateX(${(-py * 6).toFixed(2)}deg) rotateY(${(px * 8).toFixed(2)}deg)`;
-      thumb.style.setProperty("--gx", `${(px + 0.5) * 100}%`);
-      thumb.style.setProperty("--gy", `${(py + 0.5) * 100}%`);
+      thumb.style.setProperty("--gx", `${((px + 0.5) * 100).toFixed(1)}%`);
+      thumb.style.setProperty("--gy", `${((py + 0.5) * 100).toFixed(1)}%`);
     }
+  }
+  addEventListener("pointermove", (e) => {
+    pending = e;
+    if (!scheduled) { scheduled = true; requestAnimationFrame(handlePointer); }
   }, { passive: true });
 })();

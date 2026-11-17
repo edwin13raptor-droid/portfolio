@@ -104,28 +104,33 @@
   bar.className = "scroll-progress";
   document.body.append(bar);
 
-  let ticking = false;
+  // One read pass, then one write pass per frame (no layout thrashing); the list of
+  // parallax covers is collected once per render instead of on every scroll.
+  let ticking = false, mocks = [], heroTitle = null, maxScroll = 0;
+  const collect = () => {
+    mocks = [...document.querySelectorAll(".thumb .mock")];
+    heroTitle = document.querySelector(".hero h1");
+    maxScroll = document.documentElement.scrollHeight - innerHeight;
+  };
   function onScroll() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
       ticking = false;
-      const max = document.documentElement.scrollHeight - innerHeight;
-      bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-      const vh = innerHeight;
-      document.querySelectorAll(".thumb .mock").forEach((m) => {
+      const vh = innerHeight, y = scrollY;
+      const offsets = mocks.map((m) => {
         const r = m.parentElement.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > vh) return;
-        const offset = (r.top + r.height / 2 - vh / 2) / vh; // -1..1
-        m.style.translate = `0 ${(offset * 26).toFixed(1)}px`;
+        return r.bottom < 0 || r.top > vh ? null : (r.top + r.height / 2 - vh / 2) / vh; // -1..1
       });
-      const hero = document.querySelector(".hero h1");
-      if (hero && scrollY < vh) hero.style.translate = `0 ${(scrollY * 0.18).toFixed(1)}px`;
+      bar.style.transform = `scaleX(${maxScroll > 0 ? Math.min(1, y / maxScroll) : 0})`;
+      offsets.forEach((o, i) => { if (o !== null) mocks[i].style.translate = `0 ${(o * 26).toFixed(1)}px`; });
+      if (heroTitle && y < vh) heroTitle.style.translate = `0 ${(y * 0.18).toFixed(1)}px`;
     });
   }
   addEventListener("scroll", onScroll, { passive: true });
-  addEventListener("resize", onScroll);
-  document.addEventListener("site:rendered", onScroll);
+  addEventListener("resize", () => { collect(); onScroll(); });
+  document.addEventListener("site:rendered", () => { collect(); onScroll(); });
+  addEventListener("load", () => { collect(); onScroll(); });
 
   if (!finePointer) return;
 
@@ -137,18 +142,21 @@
   document.documentElement.classList.add("has-cursor");
   const label = cursor.firstChild;
 
-  let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my, shown = false;
+  // The follow-animation only runs while the dot is catching up, then sleeps until the mouse moves
+  let mx = innerWidth / 2, my = innerHeight / 2, cx = mx, cy = my, shown = false, running = false;
+  function loop() {
+    cx += (mx - cx) * 0.25;
+    cy += (my - cy) * 0.25;
+    if (Math.abs(mx - cx) < 0.1 && Math.abs(my - cy) < 0.1) { cx = mx; cy = my; running = false; }
+    cursor.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+    if (running) requestAnimationFrame(loop);
+  }
   addEventListener("mousemove", (e) => {
     mx = e.clientX; my = e.clientY;
     if (!shown) { shown = true; cx = mx; cy = my; cursor.classList.add("on"); }
+    if (!running) { running = true; requestAnimationFrame(loop); }
   }, { passive: true });
   document.addEventListener("mouseleave", () => { shown = false; cursor.classList.remove("on"); });
-  (function loop() {
-    cx += (mx - cx) * 0.2;
-    cy += (my - cy) * 0.2;
-    cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-    requestAnimationFrame(loop);
-  })();
 
   addEventListener("mouseover", (e) => {
     const t = e.target;

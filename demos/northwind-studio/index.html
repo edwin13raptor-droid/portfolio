@@ -12,6 +12,9 @@
   <script>if (self !== top) document.documentElement.classList.add("framed");</script>
   <style>
     .framed .ribbon { display: none; }
+    /* Shown as a small preview inside the portfolio: freeze all motion so it costs nothing */
+    .framed *, .framed *::before, .framed *::after { animation: none !important; transition: none !important; }
+    .framed .reveal, .framed .hero h1 span { opacity: 1 !important; transform: none !important; }
     :root { --bg: #ecebe6; --ink: #111111; --mute: #77756f; --line: #cfccc4; --steel: #7f97b2; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -209,7 +212,7 @@
       if (row) { if (prev.dataset.art !== row.dataset.art) { prev.dataset.art = row.dataset.art; prev.innerHTML = ART[row.dataset.art]; } prev.classList.add("on"); }
     });
     index.addEventListener("mouseleave", () => prev.classList.remove("on"));
-    (function follow() { px += (tx - px) * .15; py += (ty - py) * .15; prev.style.left = px + "px"; prev.style.top = py + "px"; requestAnimationFrame(follow); })();
+    if (self === top) (function follow() { px += (tx - px) * .15; py += (ty - py) * .15; prev.style.left = px + "px"; prev.style.top = py + "px"; requestAnimationFrame(follow); })();
 
     // Philosophy text lights up word by word as you scroll
     const phil = document.getElementById("phil");

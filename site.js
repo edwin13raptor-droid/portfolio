@@ -586,19 +586,8 @@
     })();
   }
 
-  // ---------- smooth page transitions ----------
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("a[href]");
-    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-    if (a.target === "_blank" || a.hasAttribute("download")) return;
-    const url = new URL(a.href, location.href);
-    if (url.origin !== location.origin || url.pathname === location.pathname || !/\.html$|\/$|^\/[^.]*$/.test(url.pathname)) return;
-    e.preventDefault();
-    document.body.classList.add("is-leaving");
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(() => (location.href = url.href), reduce ? 0 : 300);
-  });
-  window.addEventListener("pageshow", (e) => e.persisted && document.body.classList.remove("is-leaving"));
+  // Page transitions are handled by the browser (@view-transition in styles.css):
+  // links navigate immediately — nothing waits for an animation.
 
   // ---------- admin panel trigger ----------
   let adminLoading = null;

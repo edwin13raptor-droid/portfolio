@@ -12,6 +12,9 @@
   <script>if (self !== top) document.documentElement.classList.add("framed");</script>
   <style>
     .framed .ribbon { display: none; }
+    /* Shown as a small preview inside the portfolio: freeze all motion so it costs nothing */
+    .framed *, .framed *::before, .framed *::after { animation: none !important; transition: none !important; }
+    .framed .reveal, .framed .hero h1 span { opacity: 1 !important; transform: none !important; }
     :root { --cream: #f5eee4; --paper: #fbf7f1; --espresso: #2a1d16; --bean: #5b4033; --terra: #c98b5a; --sage: #9aa889; --line: #e4d8c8; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }

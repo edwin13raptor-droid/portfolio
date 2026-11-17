@@ -30,19 +30,28 @@ body {
   font: 400 1rem/1.65 var(--body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  opacity: 1;
-  transition: opacity .35s var(--ease);
 }
-/* Page-change curtain: covers the page while it loads, wipes up on arrival, wipes in on leave */
+/* Page changes: the browser's own smooth cross-fade (never blocks the click or covers the page)
+   plus a thin lime line that sweeps across the top as the new page appears. */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-out .22s ease both; }
+::view-transition-new(root) { animation: vt-in .32s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-10px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(14px); } }
 body::after {
-  content: ""; position: fixed; inset: 0; z-index: 900; pointer-events: none;
-  background: var(--accent);
-  transform: scaleY(0); transform-origin: top;
-  transition: transform .42s cubic-bezier(.76, 0, .24, 1);
+  content: ""; position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 900; pointer-events: none;
+  background: var(--accent); transform-origin: left;
+  animation: sweep .7s cubic-bezier(.65, 0, .35, 1) both;
 }
-body.is-loading::after { transform: scaleY(1); transition: none; }
-body.is-leaving::after { transform: scaleY(1); transform-origin: bottom; }
-@media (prefers-reduced-motion: reduce) { body::after { display: none; } }
+@keyframes sweep {
+  0% { transform: scaleX(0); opacity: 1; }
+  60% { transform: scaleX(1); opacity: 1; transform-origin: left; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::after { display: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
 body.menu-open { overflow: hidden; }
 /* backdrop-filter would trap the fixed mobile menu inside the header */
 body.menu-open .nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--bg); }
@@ -83,8 +92,8 @@ h1 em, h2 em { color: var(--dim); }
   display: flex; justify-content: space-between; align-items: center;
   padding: 18px max(16px, calc((100vw - var(--max)) / 2 + var(--gutter)));
   background: rgba(10, 10, 10, .72);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
   transition: border-color .4s;
   min-height: 72px;
@@ -462,10 +471,12 @@ main { min-height: 60vh; }
   mask-image: linear-gradient(#000 70%, transparent); -webkit-mask-image: linear-gradient(#000 70%, transparent);
 }
 .hero-canvas { position: absolute; inset: 0; }
-.blob { position: absolute; width: 46vw; aspect-ratio: 1; border-radius: 50%; filter: blur(90px); opacity: .22; animation: blob 22s ease-in-out infinite; }
-.b1 { background: var(--accent); top: -10%; right: -6%; }
-.b2 { background: var(--accent-2); top: 30%; right: 22%; width: 34vw; animation-delay: -7s; opacity: .2; }
-.b3 { background: var(--accent-3); bottom: -18%; left: -8%; width: 38vw; animation-delay: -14s; opacity: .14; }
+/* Soft colour glows: a radial gradient looks like a blur but costs almost nothing to animate
+   (a CSS blur filter on big moving shapes makes the whole page lag). */
+.blob { position: absolute; width: 60vw; aspect-ratio: 1; border-radius: 50%; opacity: .28; animation: blob 22s ease-in-out infinite; will-change: transform; contain: strict; }
+.b1 { background: radial-gradient(circle, var(--accent), transparent 62%); top: -22%; right: -14%; }
+.b2 { background: radial-gradient(circle, var(--accent-2), transparent 62%); top: 18%; right: 14%; width: 46vw; animation-delay: -7s; opacity: .26; }
+.b3 { background: radial-gradient(circle, var(--accent-3), transparent 62%); bottom: -30%; left: -16%; width: 52vw; animation-delay: -14s; opacity: .18; }
 @keyframes blob { 33% { transform: translate(-6vw, 4vw) scale(1.1); } 66% { transform: translate(4vw, -3vw) scale(.92); } }
 .hero h1 em:not(:has(.wi)), .hero h1 em .wi { background: linear-gradient(100deg, var(--accent), var(--accent-3) 60%, var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
@@ -570,7 +581,6 @@ main { min-height: 60vh; }
   .pg-media { height: 80px; }
   .band { margin-top: 100px; padding: 26px 0; }
   .cta-band { margin-top: 100px; }
-  .blob { filter: blur(60px); }
 }
 
 /* =========================================================
@@ -759,11 +769,11 @@ body.adm-open .to-top { display: none; }
 .cursor.hide { opacity: 0; }
 .cursor::before {
   content: ""; position: absolute; width: 10px; height: 10px; left: -5px; top: -5px; border-radius: 50%;
-  background: var(--text); mix-blend-mode: difference;
+  background: var(--text); /* no mix-blend-mode: blending a moving layer repaints the page under it */
   transition: transform .35s var(--ease), background .3s;
 }
-.cursor.link::before { transform: scale(3.6); background: #fff; }
-.cursor.view::before { transform: scale(9); background: var(--accent); mix-blend-mode: normal; }
+.cursor.link::before { transform: scale(3.6); background: rgba(237, 237, 235, .16); }
+.cursor.view::before { transform: scale(9); background: var(--accent); }
 .cursor.down::before { transform: scale(.7); }
 .cursor.view.down::before { transform: scale(8); }
 .cursor-label { position: absolute; transform: translate(-50%, -50%) scale(.5); font: 600 .78rem var(--body); color: #0a0a0a; opacity: 0; transition: opacity .25s, transform .35s var(--ease); white-space: nowrap; }
