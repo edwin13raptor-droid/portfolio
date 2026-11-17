@@ -399,6 +399,7 @@
       await api("/api/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: draft }) });
       saved = clone(draft);
       window.Site.content = clone(draft);
+      try { localStorage.setItem("site-content-v1", JSON.stringify(draft)); } catch {} // next page loads show it instantly
       setDirty(false);
       toast("Saved — your site is updated");
     } catch (e) {
@@ -437,7 +438,8 @@
     // Pull the freshest saved content (skips the CDN cache)
     try {
       const j = await api("/api/content?fresh=1");
-      if (j.content) window.Site.content = j.content;
+      // fill in any fields added to the site since this content was saved
+      if (j.content) window.Site.content = window.Site.merge(window.DEFAULT_CONTENT, j.content);
     } catch {}
     saved = clone(window.Site.content);
     draft = clone(saved);

@@ -138,24 +138,39 @@
     };
   }
 
-  async function detectCurrency(base) {
+  // Currency, in two steps so prices never wait on the network:
+  //  1) right away: saved choice → last detected country/rates (cached 12h) → browser language
+  //  2) in the background: ask the server for the visitor's country + live rates, then update
+  const FX_KEY = "fx-cache-v1";
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
+  function guessCountry() {
+    try { return new Intl.Locale(navigator.language).maximize().region; } catch { return null; }
+  }
+  function currencyNow(base) {
     fx.base = base;
-    let saved = null;
-    try { saved = localStorage.getItem("currency"); } catch {}
-    let country = null;
+    const saved = (() => { try { return localStorage.getItem("currency"); } catch { return null; } })();
+    const cache = store.get(FX_KEY);
+    const fresh = cache && cache.base === base && Date.now() - cache.at < 12 * 3600e3;
+    if (fresh && cache.rates) { fx.rates = cache.rates; fx.live = true; }
+    const country = (cache && cache.country) || guessCountry();
+    setCurrency(saved || CURRENCY_BY_COUNTRY[country] || "USD");
+    return fresh;
+  }
+  async function currencyLater(base) {
     try {
       const r = await fetch(`/api/rates?base=${encodeURIComponent(base)}`);
-      if (r.ok) {
-        const j = await r.json();
-        country = j.country;
-        if (j.rates) { fx.rates = j.rates; fx.live = true; }
-      }
-    } catch {}
-    if (!country) {
-      // No server (e.g. local preview): guess from the browser's language, e.g. en-ZA → ZA
-      try { country = new Intl.Locale(navigator.language).maximize().region; } catch {}
-    }
-    setCurrency(saved || CURRENCY_BY_COUNTRY[country] || "USD");
+      if (!r.ok) return false;
+      const j = await r.json();
+      const before = `${fx.code}:${fx.rate}`;
+      if (j.rates) { fx.rates = j.rates; fx.live = true; }
+      store.set(FX_KEY, { base, country: j.country || null, rates: j.rates || null, at: Date.now() });
+      const saved = (() => { try { return localStorage.getItem("currency"); } catch { return null; } })();
+      setCurrency(saved || CURRENCY_BY_COUNTRY[j.country || guessCountry()] || "USD");
+      return `${fx.code}:${fx.rate}` !== before; // true → prices changed, re-render
+    } catch { return false; }
   }
 
   function renderPricing(c) {
@@ -402,7 +417,7 @@
     const screen = p.image
       ? `<img src="${esc(p.image)}" alt="${esc(p.title)} website" loading="lazy" />`
       : url && isLocal(url)
-      ? `<div class="mock-live"><iframe src="${esc(url)}" title="${esc(p.title)} preview" tabindex="-1" aria-hidden="true" scrolling="no"></iframe></div>`
+      ? `<div class="mock-live"><iframe src="${esc(url)}" title="${esc(p.title)} preview" loading="lazy" tabindex="-1" aria-hidden="true" scrolling="no"></iframe></div>`
       : `<div class="mock-ui v${i % 3}">
           <div class="mock-nav"><b>${esc(p.title)}</b><s></s><s></s><s></s></div>
           <div class="mock-hero"><div class="mock-h">${esc(p.title)}</div><div class="mock-lines"><s></s><s></s></div><div class="mock-btn"></div></div>
@@ -525,40 +540,51 @@
     document.dispatchEvent(new Event("site:rendered")); // motion.js hooks in here
   }
 
-  async function load() {
-    // content.js sets window.DEFAULT_CONTENT (works even when the page is opened as a file)
-    const defaults = window.DEFAULT_CONTENT;
-    if (location.protocol === "file:") return defaults;
-    try {
-      const r = await fetch("/api/content", { headers: { Accept: "application/json" } });
-      if (r.ok) {
-        const j = await r.json();
-        if (j && j.content) return merge(defaults, j.content);
-      }
-    } catch {}
-    return defaults;
-  }
+  // ---------- Loading: show the page instantly, refresh quietly ----------
+  // The page renders straight away from the last content this browser saw (or content.js),
+  // so it never waits on the server. Then it checks for newer content (what you saved in the
+  // admin panel) and only re-renders if something actually changed.
+  const CONTENT_KEY = "site-content-v1";
+  const defaults = window.DEFAULT_CONTENT;
+  const cached = location.protocol === "file:" ? null : store.get(CONTENT_KEY);
+  const first = cached ? merge(defaults, cached) : defaults;
 
-  window.Site = { content: null, render, rich, esc, merge, fx };
-
-  // Draw the top menu (and phone hamburger) + footer right away from the defaults,
-  // so navigation never waits on anything loading
-  if (window.DEFAULT_CONTENT) {
-    renderHeader(window.DEFAULT_CONTENT);
-    renderFooter(window.DEFAULT_CONTENT);
-  }
+  window.Site = { content: first, render, rich, esc, merge, fx };
 
   const needsPrices = () => document.querySelector("#packages, #price-calc, input[data-budget]");
-  load()
-    .then(async (c) => {
-      window.Site.content = c;
-      if (needsPrices()) await detectCurrency(pricingOf(c).currency);
-      render(c);
-    })
-    .catch((e) => console.error("Could not load content", e))
-    .finally(() => setTimeout(() => document.body.classList.remove("is-loading"), 30));
-  // Never leave the page invisible, even if something above fails
-  setTimeout(() => document.body.classList.remove("is-loading"), 2500);
+  const ratesFresh = needsPrices() ? currencyNow(pricingOf(first).currency) : true;
+
+  // Render as soon as every script on the page has loaded (motion.js etc. listen for it)
+  const start = () => {
+    try { render(first); } catch (e) { console.error("Could not render", e); }
+    requestAnimationFrame(() => document.body.classList.remove("is-loading"));
+    setTimeout(() => document.body.classList.remove("is-loading"), 300); // also when rAF is paused
+    refresh();
+  };
+  document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", start, { once: true }) : start();
+
+  function refresh() {
+    if (location.protocol === "file:") return;
+    (async () => {
+      let changed = false;
+      try {
+        const r = await fetch("/api/content", { headers: { Accept: "application/json" } });
+        if (r.ok) {
+          const j = await r.json();
+          const saved = j && j.content ? j.content : null;
+          if (JSON.stringify(saved) !== JSON.stringify(cached)) {
+            if (saved) store.set(CONTENT_KEY, saved);
+            else try { localStorage.removeItem(CONTENT_KEY); } catch {}
+            window.Site.content = saved ? merge(defaults, saved) : defaults;
+            changed = true;
+          }
+        }
+      } catch {}
+      if (needsPrices() && !ratesFresh) changed = (await currencyLater(pricingOf(window.Site.content).currency)) || changed;
+      // Don't re-render under the admin panel (it has its own copy being edited)
+      if (changed && !document.body.classList.contains("adm-open")) render(window.Site.content);
+    })();
+  }
 
   // ---------- smooth page transitions ----------
   document.addEventListener("click", (e) => {
@@ -570,7 +596,7 @@
     e.preventDefault();
     document.body.classList.add("is-leaving");
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(() => (location.href = url.href), reduce ? 0 : 560);
+    setTimeout(() => (location.href = url.href), reduce ? 0 : 300);
   });
   window.addEventListener("pageshow", (e) => e.persisted && document.body.classList.remove("is-leaving"));
 

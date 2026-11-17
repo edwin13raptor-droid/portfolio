@@ -84,10 +84,16 @@
   }
 
   // Run after every render (first load, and live admin edits — those appear instantly)
+  // If this page is being prepared in the background (hover prerender), hold the intro
+  // animations until the visitor actually arrives, so they still see them play.
+  const arrived = document.prerendering
+    ? new Promise((r) => document.addEventListener("prerenderingchange", r, { once: true }))
+    : Promise.resolve();
   let first = true;
-  document.addEventListener("site:rendered", () => {
+  document.addEventListener("site:rendered", async () => {
     const instant = !first;
     first = false;
+    if (!instant) await arrived;
     splitAll(instant);
     counters(instant);
     if (!instant) document.documentElement.classList.add("intro");
