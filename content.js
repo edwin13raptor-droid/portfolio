@@ -66,19 +66,20 @@ window.DEFAULT_CONTENT = {
     "packagesText": "Simple, transparent pricing: main pages and inner pages each have a price cap, so big sites never get out of hand.",
     "pricing": {
       "currency": "USD",
-      "homePage": 100,
-      "extraPage": 150,
+      "homePage": 75,
+      "extraPage": 120,
       "largeAfter": 6,
-      "largePrice": 1000,
-      "innerPage": 25,
+      "largePrice": 795,
+      "innerPage": 15,
       "innerCapAfter": 30,
-      "innerCap": 750,
+      "innerCap": 450,
       "shopBlogFlat": 50
     },
     "packages": [
-      { "id": "pk1", "name": "Single page", "amount": 100, "from": false, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
-      { "id": "pk2", "name": "Business", "amount": 250, "from": true, "pagesLabel": "2 – {largeAfter} main pages", "text": "Homepage {home} + {page} for each additional main page.", "features": ["Up to {largeAfter} custom pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "+ {inner} per inner page"], "featured": true },
-      { "id": "pk3", "name": "Unlimited", "amount": 1000, "from": false, "pagesLabel": "{largeAfterPlus}+ main pages", "text": "Main pages are capped at {large} — add as many as you need.", "features": ["Unlimited main pages", "Online shop / payments", "Custom animations", "Multi-language", "+ {inner} per inner page"], "featured": false }
+      { "id": "pk1", "name": "Single page", "amount": 75, "from": true, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
+      { "id": "pk2", "name": "Business", "amount": 195, "from": true, "pagesLabel": "2 – {largeAfter} main pages", "text": "Homepage {home} + {page} for each additional main page.", "features": ["Up to {largeAfter} custom pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "+ {inner} per inner page"], "featured": true },
+      { "id": "pk4", "name": "Blog/Shop", "amount": 245, "from": true, "pagesLabel": "2 – {largeAfter} main pages + unlimited products or posts", "text": "Homepage {home} + {page} for each additional main page — plus unlimited products or blog posts for one flat {shopFlat}.", "features": ["Everything in Business", "Online shop or blog", "Unlimited products / posts for {shopFlat}", "Edit products and posts yourself"], "featured": false },
+      { "id": "pk3", "name": "Unlimited", "amount": 795, "from": true, "pagesLabel": "{largeAfterPlus}+ main pages", "text": "Main pages are capped at {large} — add as many as you need.", "features": ["Unlimited main pages", "Online shop / payments", "Custom animations", "Multi-language", "+ {inner} per inner page"], "featured": false }
     ],
     "processHeading": "How it *works*",
     "steps": [
@@ -95,8 +96,8 @@ window.DEFAULT_CONTENT = {
       { "id": "f4", "q": "What do you need from me?", "a": "Your logo (if you have one), some photos and a few words about your business. I can help with the rest." },
       { "id": "f5", "q": "How does payment work?", "a": "50% to start, 50% at launch. For larger projects we can split it into more parts." },
       { "id": "f6", "q": "Why are prices shown in my currency?", "a": "The site detects your region and converts my prices (set in US dollars) at today's exchange rate. The final quote is confirmed after the brief." },
-      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at $1,000 from 7 pages; inner pages are $25 each, capped at $750 once you have more than 30." },
-      { "id": "f8", "q": "I want an online shop or a blog — do I pay for every product or post?", "a": "No. Shops and blogs get unlimited products or posts for one flat $50 — add as many as you like. You only pay normally for the main pages." }
+      { "id": "f7", "q": "What's the difference between main and inner pages?", "a": "Main pages are custom-designed layouts like Home, About or Contact. Inner pages reuse a template — like blog posts, products or portfolio items. Main pages are capped at {large} from {largeAfterPlus} pages; inner pages are {inner} each, capped at {innerCap} once you have more than {innerCapAfter}." },
+      { "id": "f8", "q": "I want an online shop or a blog — do I pay for every product or post?", "a": "No. Shops and blogs get unlimited products or posts for one flat {shopFlat} — add as many as you like. You only pay normally for the main pages." }
     ]
   },
   "about": {

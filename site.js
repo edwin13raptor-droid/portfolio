@@ -538,8 +538,11 @@
     renderPricing(c);
     list("process-list", c.services?.steps, (s, i) =>
       `<li class="reveal"><span class="step">${pad(i + 1)}</span><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></li>`);
+    // FAQ texts can use the same price placeholders as plans ({home}, {page}, {large}, {inner},
+    // {innerCap}, {shopFlat}…), so answers always match your current prices and currency
+    const fp = pricingOf(c);
     list("faq", c.services?.faq, (f) =>
-      `<details class="faq-item reveal"><summary>${esc(f.q)}<span class="plus"></span></summary><p>${esc(f.a)}</p></details>`);
+      `<details class="faq-item reveal"><summary>${fill(f.q, fp)}<span class="plus"></span></summary><p>${fill(f.a, fp)}</p></details>`);
 
     // About
     const photo = document.getElementById("about-photo");

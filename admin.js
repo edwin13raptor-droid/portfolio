@@ -89,6 +89,17 @@
         blank: () => ({ id: uid(), title: "New project", subtitle: "", category: "", year: String(new Date().getFullYear()), color: "#8a8a8a", tags: [], image: "", url: "" }) },
     ]},
     { id: "services", label: "Services", page: "services.html", fields: [
+      { type: "action", label: "Load the latest plans, prices & FAQ",
+        hint: "Replaces your plans, price rules and FAQ with the newest version from the site's code (you can check everything before you Save — or click Discard to undo).",
+        run: () => {
+          if (!confirm("Replace your plans, price rules and FAQ with the latest version? You can still Discard before saving.")) return;
+          const d = window.DEFAULT_CONTENT.services;
+          set(draft, "services.pricing", clone(d.pricing));
+          set(draft, "services.packages", clone(d.packages));
+          set(draft, "services.faq", clone(d.faq));
+          setDirty(true); preview(); viewEditor();
+          toast("Loaded — check the prices, then Save");
+        } },
       { key: "services.heading", label: "Heading", type: "textarea", rows: 2, hint: RICH_HINT },
       { key: "services.intro", label: "Intro text", type: "textarea" },
       { key: "services.items", label: "Services", type: "list", itemLabel: (i) => i.title || "Service",
@@ -116,7 +127,7 @@
       { key: "services.steps", label: "Process steps", type: "list", itemLabel: (i) => i.title || "Step",
         fields: [{ key: "title", label: "Title", type: "text" }, { key: "text", label: "Description", type: "textarea" }],
         blank: () => ({ id: uid(), title: "New step", text: "" }) },
-      { key: "services.faq", label: "FAQ", type: "list", itemLabel: (i) => i.q || "Question",
+      { key: "services.faq", label: "FAQ — prices: use {home} {page} {large} {inner} {innerCap} {shopFlat} so they stay correct", type: "list", itemLabel: (i) => i.q || "Question",
         fields: [{ key: "q", label: "Question", type: "text" }, { key: "a", label: "Answer", type: "textarea" }],
         blank: () => ({ id: uid(), q: "New question?", a: "" }) },
     ]},
@@ -260,6 +271,11 @@
       const ta = h("textarea", { class: "adm-input", rows: f.rows || 4, oninput: (e) => change(path, e.target.value) });
       ta.value = value ?? "";
       return h("div", { class: "adm-field" }, label, ta, hint);
+    }
+    if (f.type === "action") {
+      return h("div", { class: "adm-field adm-action" },
+        h("button", { class: "adm-btn small", type: "button", onclick: f.run }, f.label),
+        f.hint ? h("p", { class: "adm-hint" }, f.hint) : null);
     }
     if (f.type === "toggle") {
       return h("label", { class: "adm-field adm-toggle" },
