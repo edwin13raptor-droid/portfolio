@@ -20,7 +20,7 @@ window.DEFAULT_CONTENT = {
     "ctaSecondary": "View work",
     "stats": [
       { "value": "100%", "label": "Custom design — no templates" },
-      { "value": "24h", "label": "Reply time" },
+      { "value": "2–3 days", "label": "Reply time" },
       { "value": "1 week", "label": "To launch a homepage" },
       { "value": "100%", "label": "Mobile-friendly" }
     ],
@@ -34,7 +34,7 @@ window.DEFAULT_CONTENT = {
     "playgroundHeading": "Try it — *your* site,\nyour style.",
     "playgroundText": "Pick a style and a colour and watch the website change live. Every site I build is designed around your brand like this.",
     "ctaHeading": "Your business deserves\na site like *this.*",
-    "ctaText": "Fast, beautiful and built to win customers. Tell me about your project and get a quote within 24 hours.",
+    "ctaText": "Fast, beautiful and built to win customers. Tell me about your project and get a quote within 2–3 days.",
     "ctaButton": "Start your project",
     "testimonialsHeading": "Kind *words*",
     "showTestimonials": false,
@@ -78,7 +78,7 @@ window.DEFAULT_CONTENT = {
     "packages": [
       { "id": "pk1", "name": "Single page", "amount": 75, "from": true, "pagesLabel": "1 main page", "text": "One custom-designed homepage — the fastest way to get online.", "features": ["Custom design", "Contact form", "Mobile optimised", "Basic SEO", "+ {inner} per inner page"], "featured": false },
       { "id": "pk2", "name": "Business", "amount": 195, "from": true, "pagesLabel": "2 – {largeAfter} main pages", "text": "Homepage {home} + {page} for each additional main page.", "features": ["Up to {largeAfter} custom pages", "Edit it yourself (CMS)", "Booking or contact forms", "SEO & analytics", "+ {inner} per inner page"], "featured": true },
-      { "id": "pk4", "name": "Blog/Shop", "amount": 245, "from": true, "pagesLabel": "2 – {largeAfter} main pages + unlimited products or posts", "text": "Homepage {home} + {page} for each additional main page — plus unlimited products or blog posts for one flat {shopFlat}.", "features": ["Everything in Business", "Online shop or blog", "Unlimited products / posts for {shopFlat}", "Edit products and posts yourself"], "featured": false },
+      { "id": "pk4", "name": "Blog/Shop", "amount": 125, "from": true, "pagesLabel": "1 – {largeAfter} main pages + unlimited products or posts", "text": "Homepage {home} (+ {page} for each extra main page) — plus unlimited products or blog posts for one flat {shopFlat}.", "features": ["Online shop or blog", "Unlimited products / posts for {shopFlat}", "Edit products and posts yourself"], "featured": false },
       { "id": "pk3", "name": "Unlimited", "amount": 795, "from": true, "pagesLabel": "{largeAfterPlus}+ main pages", "text": "Main pages are capped at {large} — add as many as you need.", "features": ["Unlimited main pages", "Online shop / payments", "Custom animations", "Multi-language", "+ {inner} per inner page"], "featured": false }
     ],
     "processHeading": "How it *works*",
@@ -126,7 +126,7 @@ window.DEFAULT_CONTENT = {
     "heading": "Let's *talk.*",
     "text": "Quick question? Send a message. Ready to start a website? The project form helps me give you a quote faster.",
     "briefHeading": "Starting a new website?",
-    "briefText": "Fill in the project brief — about 5 minutes — and get a quote within 24 hours.",
-    "response": "I reply within 24 hours, Monday to Saturday."
+    "briefText": "Fill in the project brief — about 5 minutes — and get a quote within 2–3 days.",
+    "response": "I reply within 2–3 days."
   }
 };

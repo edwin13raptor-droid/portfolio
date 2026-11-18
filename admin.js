@@ -53,6 +53,18 @@
         blank: () => ({ label: "", url: "" }) },
     ]},
     { id: "home", label: "Home", page: "index.html", fields: [
+      { type: "action", label: "Load the latest stats & reply-time texts",
+        hint: "Replaces the homepage stats and the reply-time texts (homepage call-to-action, contact card, contact page) with the newest version. Check, then Save — or Discard to undo.",
+        run: () => {
+          if (!confirm("Replace the stats and reply-time texts with the latest version? You can still Discard before saving.")) return;
+          const d = window.DEFAULT_CONTENT;
+          set(draft, "home.stats", clone(d.home.stats));
+          set(draft, "home.ctaText", d.home.ctaText);
+          set(draft, "contact.briefText", d.contact.briefText);
+          set(draft, "contact.response", d.contact.response);
+          setDirty(true); preview(); viewEditor();
+          toast("Loaded — check, then Save");
+        } },
       { key: "home.heading", label: "Big heading", type: "textarea", rows: 2, hint: RICH_HINT },
       { key: "home.lead", label: "Intro text", type: "textarea" },
       { key: "home.ctaPrimary", label: "Main button", type: "text" },
