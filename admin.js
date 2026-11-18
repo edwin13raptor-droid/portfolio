@@ -259,7 +259,13 @@
 
   // ---------- fields ----------
   function field(f, path) {
-    const value = get(draft, path);
+    // a button, not a setting — it has no value to read
+    if (f.type === "action") {
+      return h("div", { class: "adm-field adm-action" },
+        h("button", { class: "adm-btn small", type: "button", onclick: f.run }, f.label),
+        f.hint ? h("p", { class: "adm-hint" }, f.hint) : null);
+    }
+    const value = path ? get(draft, path) : undefined;
     const label = h("label", { class: "adm-label" }, f.label);
     const hint = f.hint ? h("p", { class: "adm-hint" }, f.hint) : null;
 
@@ -271,11 +277,6 @@
       const ta = h("textarea", { class: "adm-input", rows: f.rows || 4, oninput: (e) => change(path, e.target.value) });
       ta.value = value ?? "";
       return h("div", { class: "adm-field" }, label, ta, hint);
-    }
-    if (f.type === "action") {
-      return h("div", { class: "adm-field adm-action" },
-        h("button", { class: "adm-btn small", type: "button", onclick: f.run }, f.label),
-        f.hint ? h("p", { class: "adm-hint" }, f.hint) : null);
     }
     if (f.type === "toggle") {
       return h("label", { class: "adm-field adm-toggle" },
